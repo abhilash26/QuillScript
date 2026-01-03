@@ -19,6 +19,10 @@ globalThis.MainSettings = (class MainSettings {
     static InnerSelf = {
     // Default settings for scenario creators to modify:
 
+    // List the first name of every scenario NPC whose brain should be simulated by Inner Self:
+    IMPORTANT_SCENARIO_CHARACTERS: ""
+    // (write a comma separated list of names inside the "" like so: "Leah, Lily, Lydia")
+    ,
     // Is Inner Self already enabled when the adventure begins?
     IS_INNER_SELF_ENABLED_BY_DEFAULT: true
     // (true or false)
@@ -58,10 +62,6 @@ globalThis.MainSettings = (class MainSettings {
     // Should Inner Self model task outputs be displayed inline with the adventure text itself?
     IS_DEBUG_MODE_ENABLED_BY_DEFAULT: false
     // (true or false)
-    ,
-    // List the first name of every scenario NPC whose brain should be simulated by Inner Self:
-    IMPORTANT_SCENARIO_CHARACTERS: ""
-    // (write a comma separated list of names inside the "" like so: "Leah, Lily, Lydia")
     ,
     }; //——————————————————————————————————————————————————————————————————————————————
 
@@ -222,6 +222,10 @@ function InnerSelf(hook) {
     const S = {
     // Default settings for scenario creators to modify:
 
+    // List the first name of every scenario NPC whose brain should be simulated by Inner Self:
+    IMPORTANT_SCENARIO_CHARACTERS: ""
+    // (write a comma separated list of names inside the "" like so: "Leah, Lily, Lydia")
+    ,
     // Is Inner Self already enabled when the adventure begins?
     IS_INNER_SELF_ENABLED_BY_DEFAULT: true
     // (true or false)
@@ -261,10 +265,6 @@ function InnerSelf(hook) {
     // Should Inner Self model task outputs be displayed inline with the adventure text itself?
     IS_DEBUG_MODE_ENABLED_BY_DEFAULT: false
     // (true or false)
-    ,
-    // List the first name of every scenario NPC whose brain should be simulated by Inner Self:
-    IMPORTANT_SCENARIO_CHARACTERS: ""
-    // (write a comma separated list of names inside the "" like so: "Leah, Lily, Lydia")
     ,
     }; //——————————————————————————————————————————————————————————————————————————————
 
