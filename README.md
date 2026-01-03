@@ -119,14 +119,41 @@ All adventures played from your scenario will now include Inner Self (even exist
 At the very top of the Inner Self `Library` script tab, you'll find optional settings with simple explanations. Modify these before publishing to customize your scenario's default experience.
 
 ### Preparing Scenario NPCs
+To work on its own, provide Inner Self with the names of your scenario's most important NPCs. Inner Self will create a new brain card for each NPC you prepare, after their name appears in the story. (Kinda like story card triggers, if that makes sense!) Brains are created on-demand to avoid overwhelming players.
+
+Creators provide Inner Self with scenario NPC names in one of two ways:
+
+<details>
+<summary><b>regular method (click to expand)</b></summary>
+
+In the creator control panel near the top of your `Library` script tab:
+```javascript
+// List the first name of every scenario NPC whose brain should be simulated by Inner Self:
+IMPORTANT_SCENARIO_CHARACTERS: ""
+// (write a comma separated list of names inside the "" like so: "Leah, Lily, Lydia")
+```
+Simply list your NPC names inside the quotations. Then click the yellow `SAVE` button!
+
+</details>
+
+<details>
+<summary><b>alternative method for mobile creators (click to expand)</b></summary>
+  
 Prefix regular AID story card titles with the `@` symbol so Inner Self knows which characters should think:
 - Example card name: `@Leah`
 - Remember to use simple first names here!
+- This method is easier on mobile
 
-Alternatively, you can write a list of important scenario NPCs in the creator control panel, discussed above. Whichever is easier for you. Either way, Inner Self will use the context of your scenario to improve the thought formation process.
+</details>
 
 ### Custom NPC Brains
-For advanced scenarios, you can even load NPC brains with initial thoughts:
+Inner Self uses the context of your scenario to build minds that *don't* contradict your creative vision. Your existing plot components should be respected without any extra effort required.
+
+For advanced control, you can load NPC brains with initial thoughts:
+
+<details>
+<summary><b>optional steps (click to expand)</b></summary>
+  
 1. Transfer any NPC brain card from adventure to scenario
 2. Leave the card entry completely empty
 3. Replace the notes section with any valid string-valued JSON
@@ -134,7 +161,7 @@ For advanced scenarios, you can even load NPC brains with initial thoughts:
 ````markdown
 # You are a JSON generator:
 - Always reply with valid JSON only, no extra text
-- Base your output on the provided instructions
+- Base your output on the instructions provided
 - Do not include comments or explanations
 
 ## Overarching setting:
@@ -157,6 +184,8 @@ Your task is to transform the character concept into a JSON object
 - Be creative when roleplaying as the character
 - Respect the overarching setting
 ````
+
+</details>
 
 </details>
 
