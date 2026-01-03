@@ -2700,6 +2700,7 @@ I hope you will have lots of fun!
     // Store the agent's serialized brain in the card notes
     // Slice to the last quote or use "{}" for an empty brain
     agent.card.description = serialized.slice(0, serialized.lastIndexOf("\"") + 1) || "{}";
+    text ||= "\u200B";
     return;
 }
 
