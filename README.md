@@ -89,7 +89,7 @@ modifier(text);
 
 All adventures played from your scenario will now include Inner Self (even existing adventures)
 
-<small>Remember to read the in-game config card!</small>
+<sub>Remember to read the in-game config card!</sub>
 
 ---
 
