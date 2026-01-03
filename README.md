@@ -147,7 +147,7 @@ Prefix regular AID story card titles with the `@` symbol so Inner Self knows whi
 </details>
 
 ### Custom NPC Brains
-Inner Self uses the full context of your scenario to form minds follow your creative vision. No extra effort required.
+Inner Self uses the full context of your scenario to form minds that follow your creative vision. No extra effort required.
 
 But if you want more advanced control:
 
