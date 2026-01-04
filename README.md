@@ -204,6 +204,9 @@ Your task is to transform the character concept into a JSON object
 - [AI Dungeon official Discord server invite](https://discord.gg/MXNqpSbuZT) (required to access the first link)
 - Please remember this is a personal passion project for me, something I do because I enjoy it, not as a job. Your kindness, patience, and love mean so much to me~ ❤️
 
+### Contributions
+- [-Vinny-](https://play.aidungeon.com/profile/-Vinny-)
+
 </details>
 
 <p align="center"><i>Thank you so much for your curiosity and support~</i> ❤️</p>
