@@ -2641,6 +2641,8 @@ I hope you will have lots of fun!
                 || /^\[?\d+(?:\.?\]|\.)/.test(lower)
                 // Remove stray "user" labels from ChatML imitation
                 || /^\s*user(?:$|[^a-z])/.test(lower)
+                // Remove lines containing only " " and/or "-"
+                || /^[ -]+$/.test(lower)
             );
         })
         .join("\n")
