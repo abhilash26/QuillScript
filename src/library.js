@@ -11,7 +11,7 @@ globalThis.MainSettings = (class MainSettings {
     //—————————————————————————————————————————————————————————————————————————————————
 
     /**
-     * Inner Self v1.0.0
+     * Inner Self v1.0.1
      * Made by LewdLeah on January 3, 2026
      * Gives story characters the ability to learn, plan, and adapt over time
      * Inner Self is free and open-source for anyone! ❤️
@@ -50,6 +50,10 @@ globalThis.MainSettings = (class MainSettings {
     // When possible, what percentage of turns should involve an attempt to form a new thought?
     THOUGHT_FORMATION_CHANCE_PER_TURN: 60
     // (0 to 100)
+    ,
+    // Is the thought formation chance reduced by half during Do/Say/Story turns?
+    IS_THOUGHT_CHANCE_HALF_FOR_DO_SAY_STORY: true
+    // (true or false)
     ,
     // Is the "Configure Inner Self" story card pinned near the top of the in-game list?
     IS_CONFIG_CARD_PINNED_BY_DEFAULT: false
@@ -207,7 +211,7 @@ globalThis.MainSettings = (class MainSettings {
 //—————————————————————————————————————————————————————————————————————————————————————
 
 /**
- * Inner Self v1.0.0
+ * Inner Self v1.0.1
  * Made by LewdLeah on January 3, 2026
  * Gives story characters the ability to learn, plan, and adapt over time
  * Inner Self is free and open-source for anyone! ❤️
@@ -254,6 +258,10 @@ function InnerSelf(hook) {
     THOUGHT_FORMATION_CHANCE_PER_TURN: 60
     // (0 to 100)
     ,
+    // Is the thought formation chance reduced by half during Do/Say/Story turns?
+    IS_THOUGHT_CHANCE_HALF_FOR_DO_SAY_STORY: true
+    // (true or false)
+    ,
     // Is the "Configure Inner Self" story card pinned near the top of the in-game list?
     IS_CONFIG_CARD_PINNED_BY_DEFAULT: false
     // (true or false)
@@ -268,7 +276,7 @@ function InnerSelf(hook) {
     ,
     }; //——————————————————————————————————————————————————————————————————————————————
 
-    const version = "v1.0.0";
+    const version = "v1.0.1";
     // Validate that all required AI Dungeon global properties exist
     // Without these, Inner Self literally cannot function
     if (
@@ -407,6 +415,7 @@ function InnerSelf(hook) {
      * @property {number} distance - Number of previous actions to look back for agent name triggers
      * @property {string} indicator - The visual indicator symbol used to display active brains
      * @property {number} chance - Likelihood of performing a standard thought formation task each turn
+     * @property {boolean} half - Is the thought formation chance reduced by half during Do/Say/Story turns?
      * @property {boolean} pin - Is the config card pinned near the top of the list?
      * @property {boolean} auto - Is Auto-Cards enabled?
      * @property {boolean} debug - Is debug mode enabled for inline task output visibility?
@@ -444,6 +453,7 @@ function InnerSelf(hook) {
             distance: 5,
             indicator: "🎭",
             chance: 60,
+            half: true,
             pin: false,
             auto: false,
             debug: false,
@@ -592,6 +602,9 @@ function InnerSelf(hook) {
                 { message: "Thought formation chance per turn:", ...factory(
                     "chance", S.THOUGHT_FORMATION_CHANCE_PER_TURN,
                     { lower: 0, upper: 100, suffix: "%" }
+                ) },
+                { message: "Half thought chance for Do/Say/Story:", ...factory(
+                    "half", S.IS_THOUGHT_CHANCE_HALF_FOR_DO_SAY_STORY
                 ) },
                 { message: "Pin this config card near the top:", ...factory(
                     "pin", S.IS_CONFIG_CARD_PINNED_BY_DEFAULT
@@ -1957,10 +1970,10 @@ Follow the format **perfectly**.
             text = full ? (
                 // Brain is full, prompt for deletion
                 `${prompt.directive[pov]}${self}${text.trim()}${boundary.lower}${prompt.forget[pov]}\n\n`
-            ) : ((config.chance / ([
-                // Reduce task chance after Do/Say/Story actions (player is driving)
+            ) : ((config.chance / ((config.half && [
+                // config.half -> reduce task chance after Do/Say/Story actions (player is driving)
                 "do", "say", "story"
-            ].includes(getPrevAction()?.type) ? 200 : 100)) < Math.random()) ? (
+            ].includes(getPrevAction()?.type)) ? 200 : 100)) < Math.random()) ? (
                 // Sometimes do nothing and emit a side effect on IS.agent
                 (IS.agent = " "),
                 `${nondirective()}${self}${text.trim()} `
@@ -2157,8 +2170,11 @@ Inner Self ${version} is an AI Dungeon mod that grants memory, goals, secrets, p
 
 > Thought formation chance per turn:
 - How often NPCs attempt to form new thoughts when triggered
-- Reduced by half for Do/Say/Story actions (player is driving)
 - (0% to 100%)
+
+> Half thought chance for Do/Say/Story:
+- Reduces the thought formation chance by half during Do/Say/Story turns (maintains player agency)
+- (true or false)
 
 > Pin the config card near the top:
 - Keeps the config card pinned high in your cards list
