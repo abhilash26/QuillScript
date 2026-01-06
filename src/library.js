@@ -67,6 +67,10 @@ globalThis.MainSettings = (class MainSettings {
     IS_DEBUG_MODE_ENABLED_BY_DEFAULT: false
     // (true or false)
     ,
+    // Use minimal serialization format for brain cards? (key: value instead of JSON-like)
+    USE_MINIMAL_BRAIN_SERIALIZATION: false
+    // (true or false)
+    ,
     }; //——————————————————————————————————————————————————————————————————————————————
 
     /**
@@ -274,6 +278,10 @@ function InnerSelf(hook) {
     IS_DEBUG_MODE_ENABLED_BY_DEFAULT: false
     // (true or false)
     ,
+    // Use minimal serialization format for brain cards? (key: value instead of JSON-like)
+    USE_MINIMAL_BRAIN_SERIALIZATION: false
+    // (true or false)
+    ,
     }; //——————————————————————————————————————————————————————————————————————————————
 
     const version = "v1.0.1";
@@ -376,7 +384,6 @@ function InnerSelf(hook) {
     /**
      * Safely parses a JSON string into an object
      * Optionally attempts to repair malformed JSON by extracting quoted content
-     * Basically I use repair mode for cute little smooth brains UwU
      * @param {string} str - The string to parse
      * @param {boolean} repair - Whether to attempt repair on malformed JSON
      * @returns {Object} Parsed object or empty object on failure
@@ -398,8 +405,79 @@ function InnerSelf(hook) {
                 return parsed;
             }
         } catch {}
-        // That empty catch looks so dumb lol
         return {};
+    };
+    // ==================== BRAIN SERIALIZATION UTILITIES ====================
+    /**
+     * Parses brain from JSON-like format: "key": "value",
+     * Wrapper around deserialize for brain-specific usage
+     * @param {string} str - The string to parse
+     * @param {boolean} repair - Whether to attempt repair on malformed JSON
+     * @returns {Object} Parsed brain object or empty object on failure
+     */
+    const deserializeBrainJson = (str = "", repair = false) => deserialize(str, repair);
+    /**
+     * Parses brain from simple key: value format
+     * More user-friendly than JSON - no quotes, braces, or commas needed
+     * @param {string} str - The brain string to parse
+     * @returns {Object} Parsed brain object or empty object on failure
+     */
+    const deserializeBrainSimple = (str = "") => {
+        try {
+            const brain = {};
+            const lines = str.split("\n");
+            
+            for (const line of lines) {
+                const trimmed = line.trim();
+                if (trimmed === "") continue;
+                
+                // Find first colon (allows colons in values like "5:30 PM")
+                const colonIndex = trimmed.indexOf(":");
+                if (colonIndex === -1) continue;
+                
+                const key = trimmed.slice(0, colonIndex).trim();
+                const value = trimmed.slice(colonIndex + 1).trim();
+                
+                // Only add if both key and value are non-empty
+                if (key !== "" && value !== "") {
+                    brain[key] = value;
+                }
+            }
+            
+            return brain;
+        } catch {
+            return {};
+        }
+    };
+    /**
+     * Serializes brain to JSON-like format: "key": "value",
+     * @param {Object} brain - The brain object to serialize
+     * @returns {string} Serialized brain string
+     */
+    const serializeBrainJson = (brain = {}) => {
+        const keys = Object.keys(brain);
+        if (keys.length === 0) return "{}";
+        let serialized = "";
+        for (let i = 0; i < keys.length; i++) {
+            const key = keys[i];
+            serialized += `"${key}": ${JSON.stringify(brain[key])},\n\n`;
+        }
+        return serialized.slice(0, serialized.lastIndexOf("\"") + 1);
+    };
+    /**
+     * Serializes brain to simple key: value format
+     * @param {Object} brain - The brain object to serialize
+     * @returns {string} Serialized brain string
+     */
+    const serializeBrainSimple = (brain = {}) => {
+        const keys = Object.keys(brain);
+        if (keys.length === 0) return "";
+        let serialized = "";
+        for (let i = 0; i < keys.length; i++) {
+            const key = keys[i];
+            serialized += `${key}: ${brain[key]}\n\n`;
+        }
+        return serialized.trimEnd();
     };
     /**
      * Validated config settings for Inner Self
@@ -419,6 +497,7 @@ function InnerSelf(hook) {
      * @property {boolean} pin - Is the config card pinned near the top of the list?
      * @property {boolean} auto - Is Auto-Cards enabled?
      * @property {boolean} debug - Is debug mode enabled for inline task output visibility?
+     * @property {boolean} minimal - Use minimal brain serialization format (key: value instead of JSON)?
      * @property {string[]} agents - All agent names, ordered from highest to lowest trigger priority
      */
     /**
@@ -457,6 +536,7 @@ function InnerSelf(hook) {
             pin: false,
             auto: false,
             debug: false,
+            minimal: false,
             agents: []
         });
         /** @type {config} */
@@ -614,6 +694,9 @@ function InnerSelf(hook) {
                 ) },
                 { message: "Enable debug mode to see model tasks:", ...factory(
                     "debug", S.IS_DEBUG_MODE_ENABLED_BY_DEFAULT
+                ) },
+                { message: "Use minimal brain serialization format:", ...factory(
+                    "minimal", S.USE_MINIMAL_BRAIN_SERIALIZATION
                 ) },
                 {
                     message: "Write the name(s) of your non-player characters at the very bottom of the \"notes\" section below. This is mandatory because it allows Inner Self to assemble independent minds for the correct individuals."
@@ -968,7 +1051,7 @@ function InnerSelf(hook) {
         }
         /**
          * Gets the agent's brain (thought storage)
-         * Parses from the card description with repair mode enabled
+         * Auto-detects format: minimal (key: value) or JSON-like
          * @returns {Object} Key-value store of thoughts
          */
         get brain() {
@@ -976,13 +1059,23 @@ function InnerSelf(hook) {
                 // Return the cached brain if available
                 return this.#brain;
             }
-            // Parse the brain from card description, allow repairs
-            const source = deserialize(this.card.description, true);
-            this.#brain = {};
-            for (const key in source) {
-                // Only keep string values (the actual thoughts)
-                (typeof source[key] === "string") && (this.#brain[key] = source[key]);
+            
+            const desc = this.card.description || "";
+            
+            // Auto-detect format and parse accordingly
+            if (!desc.trim().startsWith("{") && !desc.trim().startsWith('"')) {
+                // Simple format: key: value
+                this.#brain = deserializeBrainSimple(desc);
+            } else {
+                // JSON-like format for backward compatibility
+                const source = deserializeBrainJson(desc, true);
+                this.#brain = {};
+                for (const key in source) {
+                    // Only keep string values (the actual thoughts)
+                    (typeof source[key] === "string") && (this.#brain[key] = source[key]);
+                }
             }
+            
             return this.#brain;
         }
         /**
@@ -2703,21 +2796,10 @@ I hope you will have lots of fun!
         ((out.length + op.length + 2) < 2001) ? `${op}${out ? `\n\n${out}` : ""}` : out
     ), "");
     // ==================== BRAIN SERIALIZATION ====================
-    // Rapidly reserialize a flat representation of the modified brain, without heavy memory allocations
-    // This custom serialization is faster than JSON.stringify for flat objects
-    // It also produces a more readable format in the story card
-    let serialized = "";
-    const brain = agent.brain;
-    const keys = Object.keys(brain);
-    // Build the JSON-like string manually for each key-value pair
-    for (let i = 0; i < keys.length; i++) {
-        const key = keys[i];
-        // Format: "key": "value",\n\n (with linebreaks for player readability)
-        serialized += `"${key}": ${JSON.stringify(brain[key])},\n\n`;
-    }
-    // Store the agent's serialized brain in the card notes
-    // Slice to the last quote or use "{}" for an empty brain
-    agent.card.description = serialized.slice(0, serialized.lastIndexOf("\"") + 1) || "{}";
+    // Serialize the brain using the configured format
+    agent.card.description = config.minimal
+        ? serializeBrainSimple(agent.brain)
+        : serializeBrainJson(agent.brain);
     text ||= "\u200B";
     return;
 }
