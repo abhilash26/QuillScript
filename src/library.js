@@ -11,7 +11,7 @@ globalThis.MainSettings = (class MainSettings {
     //—————————————————————————————————————————————————————————————————————————————————
 
     /**
-     * Inner Self v1.0.1
+     * Inner Self v1.0.2
      * Made by LewdLeah on January 3, 2026
      * Gives story characters the ability to learn, plan, and adapt over time
      * Inner Self is free and open-source for anyone! ❤️
@@ -55,16 +55,20 @@ globalThis.MainSettings = (class MainSettings {
     IS_THOUGHT_CHANCE_HALF_FOR_DO_SAY_STORY: true
     // (true or false)
     ,
+    // Is valid JSON shown and expected in brain card notes? Otherwise use a human-readable format
+    IS_JSON_FORMAT_USED_FOR_BRAIN_CARD_NOTES: false
+    // (true or false)
+    ,
+    // Should Inner Self model task outputs be displayed inline with the adventure text itself?
+    IS_DEBUG_MODE_ENABLED_BY_DEFAULT: false
+    // (true or false)
+    ,
     // Is the "Configure Inner Self" story card pinned near the top of the in-game list?
     IS_CONFIG_CARD_PINNED_BY_DEFAULT: false
     // (true or false)
     ,
     // Is AC already enabled when the adventure begins?
     IS_AC_ENABLED_BY_DEFAULT: false
-    // (true or false)
-    ,
-    // Should Inner Self model task outputs be displayed inline with the adventure text itself?
-    IS_DEBUG_MODE_ENABLED_BY_DEFAULT: false
     // (true or false)
     ,
     }; //——————————————————————————————————————————————————————————————————————————————
@@ -211,7 +215,7 @@ globalThis.MainSettings = (class MainSettings {
 //—————————————————————————————————————————————————————————————————————————————————————
 
 /**
- * Inner Self v1.0.1
+ * Inner Self v1.0.2
  * Made by LewdLeah on January 3, 2026
  * Gives story characters the ability to learn, plan, and adapt over time
  * Inner Self is free and open-source for anyone! ❤️
@@ -262,6 +266,14 @@ function InnerSelf(hook) {
     IS_THOUGHT_CHANCE_HALF_FOR_DO_SAY_STORY: true
     // (true or false)
     ,
+    // Is valid JSON shown and expected in brain card notes? Otherwise use a human-readable format
+    IS_JSON_FORMAT_USED_FOR_BRAIN_CARD_NOTES: false
+    // (true or false)
+    ,
+    // Should Inner Self model task outputs be displayed inline with the adventure text itself?
+    IS_DEBUG_MODE_ENABLED_BY_DEFAULT: false
+    // (true or false)
+    ,
     // Is the "Configure Inner Self" story card pinned near the top of the in-game list?
     IS_CONFIG_CARD_PINNED_BY_DEFAULT: false
     // (true or false)
@@ -270,13 +282,9 @@ function InnerSelf(hook) {
     IS_AC_ENABLED_BY_DEFAULT: false
     // (true or false)
     ,
-    // Should Inner Self model task outputs be displayed inline with the adventure text itself?
-    IS_DEBUG_MODE_ENABLED_BY_DEFAULT: false
-    // (true or false)
-    ,
     }; //——————————————————————————————————————————————————————————————————————————————
 
-    const version = "v1.0.1";
+    const version = "v1.0.2";
     // Validate that all required AI Dungeon global properties exist
     // Without these, Inner Self literally cannot function
     if (
@@ -416,9 +424,10 @@ function InnerSelf(hook) {
      * @property {string} indicator - The visual indicator symbol used to display active brains
      * @property {number} chance - Likelihood of performing a standard thought formation task each turn
      * @property {boolean} half - Is the thought formation chance reduced by half during Do/Say/Story turns?
+     * @property {boolean} json - Is raw JSON syntax used to serialize NPC brains in their card notes?
+     * @property {boolean} debug - Is debug mode enabled for inline task output visibility?
      * @property {boolean} pin - Is the config card pinned near the top of the list?
      * @property {boolean} auto - Is Auto-Cards enabled?
-     * @property {boolean} debug - Is debug mode enabled for inline task output visibility?
      * @property {string[]} agents - All agent names, ordered from highest to lowest trigger priority
      */
     /**
@@ -454,9 +463,10 @@ function InnerSelf(hook) {
             indicator: "🎭",
             chance: 60,
             half: true,
+            json: false,
+            debug: false,
             pin: false,
             auto: false,
-            debug: false,
             agents: []
         });
         /** @type {config} */
@@ -606,14 +616,17 @@ function InnerSelf(hook) {
                 { message: "Half thought chance for Do/Say/Story:", ...factory(
                     "half", S.IS_THOUGHT_CHANCE_HALF_FOR_DO_SAY_STORY
                 ) },
+                { message: "Brain card notes store brains as JSON:", ...factory(
+                    "json", S.IS_JSON_FORMAT_USED_FOR_BRAIN_CARD_NOTES
+                ) },
+                { message: "Enable debug mode to see model tasks:", ...factory(
+                    "debug", S.IS_DEBUG_MODE_ENABLED_BY_DEFAULT
+                ) },
                 { message: "Pin this config card near the top:", ...factory(
                     "pin", S.IS_CONFIG_CARD_PINNED_BY_DEFAULT
                 ) },
                 { message: "Install Auto-Cards:", ...factory(
                     "auto", S.IS_AC_ENABLED_BY_DEFAULT
-                ) },
-                { message: "Enable debug mode to see model tasks:", ...factory(
-                    "debug", S.IS_DEBUG_MODE_ENABLED_BY_DEFAULT
                 ) },
                 {
                     message: "Write the name(s) of your non-player characters at the very bottom of the \"notes\" section below. This is mandatory because it allows Inner Self to assemble independent minds for the correct individuals."
@@ -969,19 +982,57 @@ function InnerSelf(hook) {
         /**
          * Gets the agent's brain (thought storage)
          * Parses from the card description with repair mode enabled
+         * Accepts both JSON and simplified formats for deserialization
+         * Auto-detects format for backward (and forward) compatibile conversion
          * @returns {Object} Key-value store of thoughts
          */
         get brain() {
             if (this.#brain !== null) {
                 // Return the cached brain if available
                 return this.#brain;
+            } else if (typeof this.card.description === "string") {
+                this.card.description = this.card.description.trim();
+            } else {
+                this.card.description = "";
             }
-            // Parse the brain from card description, allow repairs
-            const source = deserialize(this.card.description, true);
             this.#brain = {};
-            for (const key in source) {
-                // Only keep string values (the actual thoughts)
-                (typeof source[key] === "string") && (this.#brain[key] = source[key]);
+            if (/^[\s{,]*"/.test(this.card.description) || /"[\s},]*$/.test(this.card.description)) {
+                let parsed = false;
+                // Parse the brain as JSON from the card description, with repairs allowed
+                const source = deserialize(this.card.description, true);
+                for (const key in source) {
+                    // Only keep string values (the actual thoughts)
+                    (typeof source[key] === "string") && ((this.#brain[key] = source[key]), (parsed = true));
+                }
+                if (parsed) {
+                    // Conclude if the brain contains any string-valued properties
+                    return this.#brain;
+                }
+                // Failed to parse any meaningful thoughts, try the simple format instead
+            }
+            // Parse the brain from the card description using the simple format
+            for (const line of this.card.description.split("\n")) {
+                const clean = line.trim();
+                if (clean === "") {
+                    continue;
+                }
+                // Find the first colon (allows colons in values like "5:30 PM")
+                const bisector = clean.indexOf(":");
+                if (bisector === -1) {
+                    // No key-value pair on this line
+                    continue;
+                }
+                // Remove unwanted leading/trailing chars from both key and value
+                const [key, value] = [
+                    // Left of colon
+                    clean.slice(0, bisector),
+                    // Right of colon
+                    clean.slice(bisector + 1)
+                ].map(twin => twin.replace(/(?:^[\s{},"_\\]*|[\s{},"_\\]*$)/g, ""));
+                if ((key !== "") && (value !== "")) {
+                    // Only add if key and value are both non-empty
+                    this.#brain[key] = value;
+                }
             }
             return this.#brain;
         }
@@ -2176,6 +2227,16 @@ Inner Self ${version} is an AI Dungeon mod that grants memory, goals, secrets, p
 - Reduces the thought formation chance by half during Do/Say/Story turns (maintains player agency)
 - (true or false)
 
+> Brain card notes store brains as JSON:
+- Visually displays NPC brains as raw JSON in their brain card notes
+- Otherwise displays a more user-friendly format to make reading/editing brains easier
+- Makes no difference during gameplay or brain imports
+- (true or false)
+
+> Enable debug mode to see model tasks:
+- Shows raw brain operations inline with your story text
+- (true or false)
+
 > Pin the config card near the top:
 - Keeps the config card pinned high in your cards list
 - (true or false)
@@ -2183,10 +2244,6 @@ Inner Self ${version} is an AI Dungeon mod that grants memory, goals, secrets, p
 > Install Auto-Cards:
 - Enables automatic story card generation alongside Inner Self
 - You can safely uninstall Auto-Cards at any time
-- (true or false)
-
-> Enable debug mode to see model tasks:
-- Shows raw brain operations inline with your story text
 - (true or false)
 
 🌸 Love:
@@ -2696,6 +2753,7 @@ I hope you will have lots of fun!
         // Append the message to the agent's brain card entry
         agent.card.entry = `${agent.card.entry}\n\n// operation ${IS.ops}\n${operation()}`.trimStart();
     }
+    text ||= "\u200B";
     // Keep the operation log from growing unbounded
     // Limit to approximately 2000 chars to satisfy AID's soft entry limit
     agent.card.entry = agent.card.entry.split(/\n\n/).slice(-2000).reduceRight((out, op) => (
@@ -2705,20 +2763,32 @@ I hope you will have lots of fun!
     // ==================== BRAIN SERIALIZATION ====================
     // Rapidly reserialize a flat representation of the modified brain, without heavy memory allocations
     // This custom serialization is faster than JSON.stringify for flat objects
-    // It also produces a more readable format in the story card
-    let serialized = "";
+    // It also produces a more readable format in the story card notes
     const brain = agent.brain;
     const keys = Object.keys(brain);
-    // Build the JSON-like string manually for each key-value pair
-    for (let i = 0; i < keys.length; i++) {
-        const key = keys[i];
-        // Format: "key": "value",\n\n (with linebreaks for player readability)
-        serialized += `"${key}": ${JSON.stringify(brain[key])},\n\n`;
+    if (keys.length === 0) {
+        agent.card.description = "{}";
+        return;
     }
-    // Store the agent's serialized brain in the card notes
-    // Slice to the last quote or use "{}" for an empty brain
-    agent.card.description = serialized.slice(0, serialized.lastIndexOf("\"") + 1) || "{}";
-    text ||= "\u200B";
+    // Build the JSON-like string manually for each key-value pair
+    let serialized = "";
+    const appendPair = config.json ? ((
+        serialized = `"${keys[0]}": ${JSON.stringify(brain[keys[0]])}`
+    ), (key = "") => {
+        // Format -> "key": "value",\n\n (JSON with linebreaks)
+        serialized += `,\n\n"${key}": ${JSON.stringify(brain[key])}`;
+        return;
+    }) : ((
+        serialized = `${keys[0]}: ${brain[keys[0]]}`
+    ), (key = "") => {
+        // Format -> key: value\n\n (simple user-friendly format)
+        serialized += `\n\n${key}: ${brain[key]}`;
+        return;
+    });
+    for (let i = 1; i < keys.length; i++) {
+        appendPair(keys[i]);
+    }
+    agent.card.description = serialized;
     return;
 }
 
