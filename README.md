@@ -217,7 +217,7 @@ Your task is to transform the character concept into a JSON object
 - Pull request by [-Vinny-](https://play.aidungeon.com/profile/-Vinny-)
 
 ### 1.0.0
-- Inner Self Released!
+- Inner Self released!
 
 </details>
 
