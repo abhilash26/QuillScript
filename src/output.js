@@ -1,5 +1,5 @@
 // Your "Output" tab should look like this
-InnerSelf("output");
+QuillScript("output");
 const modifier = (text) => {
   // Any other output modifier scripts can go here
   return { text };

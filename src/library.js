@@ -3,7 +3,7 @@
 /**
  * Main control panel for scenario creator convenience
  * Settings defined here will override their counterparts elsewhere
- * Most AC and Inner Self settings are included
+ * Most AC and QuillScript settings are included
  * Safe to delete
  */
 globalThis.MainSettings = (class MainSettings {
@@ -11,19 +11,19 @@ globalThis.MainSettings = (class MainSettings {
     //—————————————————————————————————————————————————————————————————————————————————
 
     /**
-     * Inner Self v1.0.2
-     * Made by LewdLeah on January 3, 2026
+     * QuillScript
+     * Made by Anonymous
      * Gives story characters the ability to learn, plan, and adapt over time
-     * Inner Self is free and open-source for anyone! ❤️
+     * QuillScript is free and open-source for anyone! ❤️
      */
-    static InnerSelf = {
+    static QS = {
     // Default settings for scenario creators to modify:
 
-    // List the first name of every scenario NPC whose brain should be simulated by Inner Self:
+    // List the first name of every scenario NPC whose brain should be simulated by QuillScript:
     IMPORTANT_SCENARIO_CHARACTERS: ""
-    // (write a comma separated list of names inside the "" like so: "Leah, Lily, Lydia")
+    // (write a comma separated list of names inside the "" like so: "Alex, Lily, Lydia")
     ,
-    // Is Inner Self already enabled when the adventure begins?
+    // Is QuillScript already enabled when the adventure begins?
     IS_INNER_SELF_ENABLED_BY_DEFAULT: true
     // (true or false)
     ,
@@ -39,7 +39,7 @@ globalThis.MainSettings = (class MainSettings {
     PERCENTAGE_OF_RECENT_STORY_USED_FOR_BRAINS: 30
     // (1 to 95)
     ,
-    // How many actions back should Inner Self look for character name triggers?
+    // How many actions back should QuillScript look for character name triggers?
     NUMBER_OF_ACTIONS_TO_LOOK_BACK_FOR_TRIGGERS: 5
     // (1 to 250)
     ,
@@ -59,11 +59,11 @@ globalThis.MainSettings = (class MainSettings {
     IS_JSON_FORMAT_USED_FOR_BRAIN_CARD_NOTES: false
     // (true or false)
     ,
-    // Should Inner Self model task outputs be displayed inline with the adventure text itself?
+    // Should QuillScript model task outputs be displayed inline with the adventure text itself?
     IS_DEBUG_MODE_ENABLED_BY_DEFAULT: false
     // (true or false)
     ,
-    // Is the "Configure Inner Self" story card pinned near the top of the in-game list?
+    // Is the "Configure QuillScript" story card pinned near the top of the in-game list?
     IS_CONFIG_CARD_PINNED_BY_DEFAULT: false
     // (true or false)
     ,
@@ -74,8 +74,7 @@ globalThis.MainSettings = (class MainSettings {
     }; //——————————————————————————————————————————————————————————————————————————————
 
     /**
-     * AC v1.1.3
-     * Made by LewdLeah on May 21, 2025
+     * AC Made by LewdLeah
      * This AI Dungeon script automatically creates and updates plot-relevant story cards while you play
      * General-purpose usefulness and compatibility with other scenarios/scripts were my design priorities
      * AC is fully open-source, please copy for use within your own projects! ❤️
@@ -212,15 +211,7 @@ globalThis.MainSettings = (class MainSettings {
     }
 });
 
-//—————————————————————————————————————————————————————————————————————————————————————
-
-/**
- * Inner Self v1.0.2
- * Made by LewdLeah on January 3, 2026
- * Gives story characters the ability to learn, plan, and adapt over time
- * Inner Self is free and open-source for anyone! ❤️
- */
-function InnerSelf(hook) {
+function QuillScript(hook) {
     "use strict";
     /**
      * Scenario-level default settings
@@ -230,11 +221,11 @@ function InnerSelf(hook) {
     const S = {
     // Default settings for scenario creators to modify:
 
-    // List the first name of every scenario NPC whose brain should be simulated by Inner Self:
+    // List the first name of every scenario NPC whose brain should be simulated by QuillScript:
     IMPORTANT_SCENARIO_CHARACTERS: ""
-    // (write a comma separated list of names inside the "" like so: "Leah, Lily, Lydia")
+    // (write a comma separated list of names inside the "" like so: "Alex, Lily, Lydia")
     ,
-    // Is Inner Self already enabled when the adventure begins?
+    // Is QuillScript already enabled when the adventure begins?
     IS_INNER_SELF_ENABLED_BY_DEFAULT: true
     // (true or false)
     ,
@@ -250,7 +241,7 @@ function InnerSelf(hook) {
     PERCENTAGE_OF_RECENT_STORY_USED_FOR_BRAINS: 30
     // (1 to 95)
     ,
-    // How many actions back should Inner Self look for character name triggers?
+    // How many actions back should QuillScript look for character name triggers?
     NUMBER_OF_ACTIONS_TO_LOOK_BACK_FOR_TRIGGERS: 5
     // (1 to 250)
     ,
@@ -270,11 +261,11 @@ function InnerSelf(hook) {
     IS_JSON_FORMAT_USED_FOR_BRAIN_CARD_NOTES: false
     // (true or false)
     ,
-    // Should Inner Self model task outputs be displayed inline with the adventure text itself?
+    // Should QuillScript model task outputs be displayed inline with the adventure text itself?
     IS_DEBUG_MODE_ENABLED_BY_DEFAULT: false
     // (true or false)
     ,
-    // Is the "Configure Inner Self" story card pinned near the top of the in-game list?
+    // Is the "Configure QuillScript" story card pinned near the top of the in-game list?
     IS_CONFIG_CARD_PINNED_BY_DEFAULT: false
     // (true or false)
     ,
@@ -284,9 +275,8 @@ function InnerSelf(hook) {
     ,
     }; //——————————————————————————————————————————————————————————————————————————————
 
-    const version = "v1.0.2";
     // Validate that all required AI Dungeon global properties exist
-    // Without these, Inner Self literally cannot function
+    // Without these, QuillScript literally cannot function
     if (
         !globalThis.state || (typeof state !== "object") || Array.isArray(state)
         || !globalThis.info || (typeof info !== "object") || Array.isArray(info)
@@ -326,11 +316,11 @@ function InnerSelf(hook) {
         return target;
     };
     /**
-     * Persistent state of Inner Self stored in the adventure's state object
+     * Persistent state of QuillScript stored in the adventure's state object
      * This survives across turns
      * @type {Object}
      */
-    const IS = state.InnerSelf = deepMerge(state.InnerSelf || {}, {
+    const IS = state.QuillScript = deepMerge(state.QuillScript || {}, {
         // Zero-width encoded thought labels for context injection
         encoding: "",
         // Currently triggered agent name (empty string = none)
@@ -348,7 +338,7 @@ function InnerSelf(hook) {
             // External use of the AC API force-installs so it just works
             forced: false,
             // NGL this one didn't need to be stateful but I didn't feel like declaring a local so whatevs
-            // Basically AC sets this to true when it does stuff, so Inner Self can inhibit itself
+            // Basically AC sets this to true when it does stuff, so QuillScript can inhibit itself
             event: false
         }
     });
@@ -409,530 +399,6 @@ function InnerSelf(hook) {
         // That empty catch looks so dumb lol
         return {};
     };
-    /**
-     * Validated config settings for Inner Self
-     * Default settings are specified by creators at the scenario level
-     * Runtime settings are specified by players at the adventure level
-     * @typedef {Object} config
-     * @property {Object|null} card - Config card object reference
-     * @property {boolean} allow - Is Inner Self enabled?
-     * @property {string} player - The player character's name
-     * @property {number} pov - Is the adventure in 1st, 2nd, or 3rd person?
-     * @property {boolean} guide - Show a detailed guide
-     * @property {number} percent - Default percentage of Recent Story context length reserved for agent brains
-     * @property {number} distance - Number of previous actions to look back for agent name triggers
-     * @property {string} indicator - The visual indicator symbol used to display active brains
-     * @property {number} chance - Likelihood of performing a standard thought formation task each turn
-     * @property {boolean} half - Is the thought formation chance reduced by half during Do/Say/Story turns?
-     * @property {boolean} json - Is raw JSON syntax used to serialize NPC brains in their card notes?
-     * @property {boolean} debug - Is debug mode enabled for inline task output visibility?
-     * @property {boolean} pin - Is the config card pinned near the top of the list?
-     * @property {boolean} auto - Is Auto-Cards enabled?
-     * @property {string[]} agents - All agent names, ordered from highest to lowest trigger priority
-     */
-    /**
-     * Config class - Manages the Inner Self configuration card
-     * Handles building, finding, parsing, and validating all settings
-     * @class
-     */
-    class Config {
-        /**
-         * Build or find the Inner Self config card
-         * Returns the card reference and all parsed settings
-         * This is the heart of the config system
-         * @param {Set<string>} [pending] - Recursion aid for tracking pending agents
-         * @returns {config} The complete validated configuration object
-         */
-        static get(pending = new Set()) {
-        // Allow MainSettings mod to override local defaults
-        if (typeof globalThis.MainSettings === "function") {
-            new MainSettings("InnerSelf", "IS").merge(S);
-        }
-        /**
-         * Fallback values when settings are missing or invalid
-         * Frozen because I hate accidental mutations
-         * @type {config}
-         */
-        const fallback = Object.freeze({
-            allow: true,
-            guide: false,
-            player: "",
-            pov: 2,
-            percent: 30,
-            distance: 5,
-            indicator: "🎭",
-            chance: 60,
-            half: true,
-            json: false,
-            debug: false,
-            pin: false,
-            auto: false,
-            agents: []
-        });
-        /** @type {config} */
-        const config = { card: null };
-        /**
-         * Strips a string down to lowercase letters only
-         * Used for fuzzy matching of setting names
-         * @param {string} s - Input string
-         * @returns {string} Simplified string
-         */
-        const simplify = (s = "") => s.toLowerCase().replace(/[^a-z]+/g, "");
-        /**
-         * Cleans up an agent name by removing commas and zero-width chars
-         * Also normalizes whitespace because players are messy ;P
-         * @param {string} agent - Raw agent name
-         * @returns {string} Cleaned agent name
-         */
-        const cleanAgent = (agent = "") => agent.replace(/[,\u200B-\u200D]+/g, "").trim().replace(/\s+/g, " ");
-        /**
-         * Factory function that creates builder/setter pairs for config fields
-         * Handles both boolean and integer settings with validation
-         * This makes me NOT want to die every time I need to add a new setting
-         * @param {string} key - Config property name
-         * @param {*} setting - Default value from scenario settings
-         * @param {Object} int - Integer constraints (lower, upper, suffix)
-         * @returns {Object} Object with builder and setter functions
-         */
-        const factory = (key = "", setting = null, int = null) => ({
-            // Builds the display string for the config card entry
-            builder: (cfg = {}) => ` ${config[key] ?? cfg.setter?.(setting)}${(
-                // Fancy suffix or boring suffix
-                (typeof int?.suffix === "function") ? int.suffix() : int?.suffix ?? ""
-            )}`,
-            // Parses and validates a value, storing it in config
-            setter: (value = null, fallible = false) => {
-                // Helper to clamp integers within bounds
-                const bound = (val = 20) => Math.min(Math.max(int?.lower ?? 1, val), int?.upper ?? 95);
-                if ((typeof value === "boolean") && !int) {
-                    // Boolean setting with a boolean value (easy case)
-                    config[key] = value;
-                } else if (Number.isInteger(value) && int) {
-                    // Integer setting with an integer value (also easy)
-                    config[key] = bound(value);
-                } else if (typeof value !== "string") {
-                    // Non-string non-matching type, use fallback unless fallible
-                    if (fallible) {
-                        return;
-                    }
-                    config[key] = fallback[key];
-                } else if (int) {
-                    // Parse integer from string, stripping decimals and non-digits
-                    value = value.split(/[./]/, 1)[0].replace(/[^\d]+/g, "");
-                    if (value !== "") {
-                        config[key] = bound(parseInt(value, 10));
-                    } else if (!fallible) {
-                        config[key] = bound(fallback[key]);
-                    }
-                } else {
-                    // Parse boolean from string with synonym support
-                    value = simplify(value);
-                    if (["true", "t", "yes", "y", "on", "1", "enable", "enabled"].includes(value)) {
-                        config[key] = true;
-                    } else if (["false", "f", "no", "n", "off", "0", "disable", "disabled"].includes(value)) {
-                        config[key] = false;
-                    } else if (!fallible) {
-                        config[key] = fallback[key];
-                    }
-                }
-                return config[key];
-            }
-        });
-        /**
-         * Template for building the Inner Self config card
-         * Contains all the user-facing text and settings
-         * @type {Object}
-         */
-        const template = {
-            type: "class",
-            title: "Configure \nInner Self",
-            // The config card entry contains the main settings
-            entry: [
-                {
-                    message: "Inner Self grants story characters the ability to learn, plan, and adapt over time. Edit the entry and notes below to control how Inner Self behaves."
-                },
-                { message: "Enable Inner Self:", ...factory(
-                    "allow", S.IS_INNER_SELF_ENABLED_BY_DEFAULT
-                ) },
-                {
-                    message: "Show detailed guide:",
-                    builder: (cfg = {}) => ` ${(
-                        ((hook === "context") || Number.isInteger(info.maxChars))
-                        ? config.guide ?? cfg.setter?.(false)
-                        : false
-                    )}`,
-                    setter: factory("guide", false).setter
-                },
-                {
-                    message: "First name of player character:",
-                    builder: (cfg = {}) => ` "${config.player || (() => {
-                        const display = cfg.setter?.(S.PREDETERMINED_PLAYER_CHARACTER_NAME);
-                        if (config.player === "") {
-                            config.player = "the protagonist";
-                        }
-                        return display;
-                    })()}"`,
-                    setter: (value = null, fallible = false) => {
-                        const example = "Example";
-                        if (typeof value === "string") {
-                            config.player = value.replaceAll("\"", "").replace(example, "").trim();
-                        } else if (fallible) {
-                            return;
-                        } else {
-                            config.player = fallback.player;
-                        }
-                        return config.player || example;
-                    }
-                },
-                { message: "Adventure in 1st, 2nd, or 3rd person:", ...factory(
-                    "pov", S.FIRST_SECOND_OR_THIRD_PERSON_POV,
-                    { lower: 1, upper: 3, suffix: () => ["st", "nd", "rd"][config.pov - 1] ?? "" }
-                ) },
-                { message: "Max brain size relative to story context:", ...factory(
-                    "percent", S.PERCENTAGE_OF_RECENT_STORY_USED_FOR_BRAINS,
-                    { lower: 1, upper: 95, suffix: "%" }
-                ) },
-                { message: "Recent turns searched for name triggers:", ...factory(
-                    "distance", S.NUMBER_OF_ACTIONS_TO_LOOK_BACK_FOR_TRIGGERS,
-                    { lower: 1, upper: 250 }
-                ) },
-                {
-                    message: "Visual indicator of current NPC triggers:",
-                    builder: (cfg = {}) => ` "${(
-                        config.indicator ?? cfg.setter?.(S.ACTIVE_CHARACTERS_VISUAL_INDICATOR_SYMBOL)
-                    )}"`,
-                    setter: (value = null, fallible = false) => (
-                        (typeof value === "string")
-                        ? (config.indicator = value.replace(/["\u200B-\u200D]+/g, "").trim())
-                        : (fallible)
-                        ? null
-                        : (config.indicator = fallback.indicator)
-                    )
-                },
-                { message: "Thought formation chance per turn:", ...factory(
-                    "chance", S.THOUGHT_FORMATION_CHANCE_PER_TURN,
-                    { lower: 0, upper: 100, suffix: "%" }
-                ) },
-                { message: "Half thought chance for Do/Say/Story:", ...factory(
-                    "half", S.IS_THOUGHT_CHANCE_HALF_FOR_DO_SAY_STORY
-                ) },
-                { message: "Brain card notes store brains as JSON:", ...factory(
-                    "json", S.IS_JSON_FORMAT_USED_FOR_BRAIN_CARD_NOTES
-                ) },
-                { message: "Enable debug mode to see model tasks:", ...factory(
-                    "debug", S.IS_DEBUG_MODE_ENABLED_BY_DEFAULT
-                ) },
-                { message: "Pin this config card near the top:", ...factory(
-                    "pin", S.IS_CONFIG_CARD_PINNED_BY_DEFAULT
-                ) },
-                { message: "Install Auto-Cards:", ...factory(
-                    "auto", S.IS_AC_ENABLED_BY_DEFAULT
-                ) },
-                {
-                    message: "Write the name(s) of your non-player characters at the very bottom of the \"notes\" section below. This is mandatory because it allows Inner Self to assemble independent minds for the correct individuals."
-                }
-            ],
-            // Description section contains info and agent list
-            description: [
-                {
-                    message: "Please visit my profile @LewdLeah through the link above and read my bio for simple steps to add Inner Self to your own scenarios! ❤️"
-                },
-                {
-                    message: `Inner Self ${version} is an open-source and general-purpose AI Dungeon mod by LewdLeah. You have my full permission to use it with any scenario!`
-                },
-                {
-                    // This is where players list their NPCs
-                    message: "Write the first name of every intelligent story character on separate lines below, listed from highest to lowest trigger priority:",
-                    builder: (cfg = {}) => ["", "", ...(
-                        config.agents ?? cfg.setter?.(S.IMPORTANT_SCENARIO_CHARACTERS)
-                    ), ""].join("\n"),
-                    setter: (value = null, fallible = false) => {
-                        // Accept string (from card) or array (from code)
-                        if (typeof value === "string") {
-                            config.agents = value.split(/[,\n]/);
-                        } else if (Array.isArray(value)) {
-                            config.agents = value.filter(agent => (typeof agent === "string"));
-                        } else if (fallible) {
-                            return;
-                        } else {
-                            return (config.agents = [...fallback.agents]);
-                        }
-                        // Clean, deduplicate, and remove empties
-                        return (config.agents = [...new Set(config.agents
-                            .map(agent => cleanAgent(agent))
-                            .filter(agent => (agent !== ""))
-                        )]);
-                    }
-                }
-            ]
-        };
-        // Track discovered agents to avoid duplicates
-        const agents = new Set();
-        // Simplified title for fuzzy matching
-        const target = simplify(template.title);
-        // Scan all story cards in reverse order
-        // Looking for config cards, agent cards, and duplicates (remove the latter in-place)
-        for (let i = storyCards.length - 1; -1 < i; i--) {
-            const card = storyCards[i];
-            if (!card || (typeof card !== "object") || Array.isArray(card)) {
-                // Remove invalid cards (null, non-objects, arrays)
-                // If this ever happens in a real situation, I will cry
-                storyCards.splice(i, 1);
-            } else if ((typeof card.keys === "string") && card.keys.includes("\"agent\"")) {
-                // This card has agent metadata, extract and validate it
-                const metadata = deserialize(card.keys);
-                if (typeof metadata.agent === "string") {
-                    metadata.agent = cleanAgent(metadata.agent);
-                    if (metadata.agent !== "") {
-                        if (!agents.has(metadata.agent)) {
-                            // First time seeing this brain card
-                            agents.add(metadata.agent);
-                            card.keys = JSON.stringify(metadata);
-                            continue;
-                        } else if (typeof card.title === "string") {
-                            // Duplicate brain card, mark it as a copy
-                            card.title = card.title.trim();
-                            card.title = `Copy of ${(card.title === "") ? "Agent" : card.title}`;
-                        }
-                    }
-                }
-                // Invalid agent metadata, clear it
-                card.keys = "";
-            } else if ((typeof card.title !== "string") || (100 < card.title.length)) {
-                // Skip cards with missing or absurdly long titles
-                continue;
-            } else if (card.title.startsWith("@") && !card.title.includes("figure")) {
-                // Cards starting with @ are shorthand for adding agents
-                const agent = cleanAgent(card.title.replace(/^[@\s]*/, ""));
-                if (agent !== "") {
-                    card.title = agent;
-                    pending.add(agent);
-                }
-            } else if ((() => {
-                // Fuzzy matching to find the config card even if title is slightly mangled
-                // Because players gonna player and typos happen
-                const current = simplify(card.title);
-                const maxMistakes = 2;
-                let mistakes = 0;
-                // Target index (expected title)
-                let t = 0;
-                // Current index (actual title)
-                let c = 0;
-                while ((t < target.length) && (c < current.length)) {
-                    if (current[c] === target[t]) {
-                        // Chars match, advance both
-                        t++; c++;
-                        continue;
-                    } else if (maxMistakes <= mistakes) {
-                        // Too many mistakes, this isn't the config card (I hope)
-                        return true;
-                    }
-                    // Allow for insertions, deletions, or substitutions
-                    mistakes++;
-                    (current[c + 1] === target[t])
-                    ? c++
-                    : (current[c] === target[t + 1])
-                    ? t++
-                    : (t++, c++)
-                }
-                // Count leftover chars as mistakes
-                mistakes += (target.length - t) + (current.length - c);
-                // This is basically bargain bin levenshtein distance but less costly
-                return (maxMistakes < mistakes);
-            })()) {
-                // Title didn't match the fuzzy search
-                continue;
-            } else if (config.card === null) {
-                // Found the config card
-                config.card = card;
-            } else if (typeof removeStoryCard === "function") {
-                // Duplicate config card, remove it properly the way Latitude intended
-                // (I know it's just a wrapper for splice, but that may change one day lol)
-                removeStoryCard(i);
-            } else {
-                // Fallback removal for duplicate config cards
-                storyCards.splice(i, 1);
-            }
-        }
-        /**
-         * Builds a formatted string from template sections
-         * @param {Array} source - Array of config message objects
-         * @param {string} delimiter - String to join sections with
-         * @returns {string} Formatted config text
-         */
-        const build = (source = [], delimiter = "\n\n") => (source
-            .map(cfg => `> ${cfg.message}${cfg.builder?.(cfg) ?? ""}`)
-            .join(delimiter)
-        );
-        if (config.card === null) {
-            // If no config card exists, create one and recurse
-            addStoryCard(u,
-                build(template.entry, "\n"),
-                template.type,
-                template.title,
-                build(template.description, "\n\n")
-            );
-            // Recurse to parse the newly created card
-            return Config.get(pending);
-        }
-        // Parse existing card content to extract user-modified settings
-        // This is where IS reads back what the player has configured
-        // Abomination :3
-        ["entry", "description"].map(source => [source, (
-            (typeof config.card[source] === "string")
-            // Split on >, filter for lines with colons, extract key-value pairs
-            ? Object.fromEntries((config.card[source]
-                .split(/\s*>[\s>]*/)
-                .filter(block => block.includes(":"))
-                .map(block => block.split(/\s*:[\s:]*/, 2))
-            ).map(pair => [simplify(pair[0]), pair[1].trimEnd()])) : {}
-        )]).forEach(([source, extractive]) => template[source].forEach(cfg => (
-            // Try to set each config value from extracted content (fallible mode)
-            cfg.setter?.(extractive[simplify(cfg.message)], true)
-        )));
-        // Merge all discovered agents: config, brain card metadata, and "@" pending
-        config.agents = [...new Set([...(config.agents ?? fallback.agents), ...agents, ...pending])];
-        if (IS.AC.forced) {
-            // Handle forced Auto-Cards installation (silly API stuff)
-            config.auto = true;
-            IS.AC.forced = false;
-            IS.AC.enabled = true;
-        }
-        // Update the card with the canonical template format so it sticks after the hook ends
-        config.card.type = template.type;
-        config.card.title = template.title;
-        config.card.entry = build(template.entry, "\n");
-        config.card.description = build(template.description, "\n\n");
-        config.card.keys = u;
-        return config;
-    } }
-    /**
-     * Removes the visual indicator prefix from a card title
-     * The indicator is separated by a zero-width space char
-     * @param {Object} card - Story card object to modify
-     * @returns {void}
-     */
-    const deindicate = (card = {}) => {
-        if (typeof card.title !== "string") {
-            // Cry
-            card.title = "";
-        } else if (card.title.includes("\u200B")) {
-            // Strip everything before and including the zero-width space
-            card.title = (card.title
-                .slice(card.title.indexOf("\u200B") + 1)
-                .replaceAll("\u200B", "")
-                .trim()
-            );
-        }
-        return;
-    };
-    /**
-     * Agent class - Represents an NPC with a simulated brain
-     * Each agent has their own story card that stores their thoughts
-     * The brain is a key-value store of labeled thoughts
-     * @class
-     */
-    class Agent {
-        // Private fields for encapsulation
-        // Percentage of context reserved for this agent's brain
-        #percent;
-        // Visual indicator symbol shown when agent is triggered
-        #indicator;
-        // Cached reference to the agent's brain card
-        #card = null;
-        // Cached parsed brain contents
-        #brain = null;
-        // Cached parsed metadata
-        #metadata = null;
-        /**
-         * Creates a new Agent instance
-         * The agent will find or create their brain card automatically
-         * @param {string} name - The name of the agent (used for triggering)
-         * @param {Object} [options] - Optional settings for the agent
-         * @param {number} [options.percent=30] - Context reserved for brain contents
-         * @param {string} [options.indicator=null] - Visual indicator when triggered
-         */
-        constructor(name = "", { percent = 30, indicator = null } = {}) {
-            this.#indicator = indicator;
-            this.#percent = percent;
-            this.name = name;
-            return this;
-        }
-        /**
-         * Gets or creates the agent's brain card
-         * Uses lazy initialization and caching
-         * @returns {Object} The agent's story card
-         */
-        get card() {
-            if (this.#card !== null) {
-                // Return cached card if stored
-                return this.#card;
-            }
-            /**
-             * Creates a new brain card for this agent
-             * Includes a timestamp for debugging purposes
-             * @param {string} name - Display name for the card
-             * @returns {Object} The newly created card
-             */
-            const buildCard = (name = this.name) => addStoryCard(
-                JSON.stringify({ agent: this.name }),
-                (() => {
-                    // Generate a pretty timestamp for the initialization comment
-                    const time = new Date();
-                    const match = time.toLocaleString("en-US", {
-                        timeZone: "UTC",
-                        year: "numeric",
-                        month: "2-digit",
-                        day: "2-digit",
-                        hour: "numeric",
-                        minute: "2-digit",
-                        hour12: true
-                    }).match(/(\d+)\/(\d+)\/(\d+),?\s*(\d+:\d+\s*[AP]M)/);
-                    return `// initialized @ ${(
-                        match
-                        ? `${match[3]}-${match[1]}-${match[2]} ${match[4]}`
-                        : time.toISOString().replace("T", " ").slice(0, 16)
-                    )} UTC`;
-                })(),
-                "Brain",
-                name,
-                JSON.stringify({}),
-                // Thank you Mavrick
-                { returnCard: true }
-            );
-            /**
-             * Checks if a card belongs to this agent
-             * @param {Object} card - Card to check
-             * @returns {boolean} true if this is the right card
-             */
-            const isAgent = (card = {}) => (
-                (typeof card.keys === "string")
-                && card.keys.includes("\"agent\"")
-                && (deserialize(card.keys).agent === this.name)
-            );
-            if (typeof this.#indicator !== "string") {
-                // If no indicator is set, just find or create the card
-                for (const card of storyCards) {
-                    if (isAgent(card)) {
-                        // Found an existing card
-                        this.#card = card;
-                        return this.#card;
-                    }
-                }
-                // No existing card found, create one
-                this.#card = buildCard();
-                return this.#card;
-            }
-            // The Agent class instance was constructed with an indicator
-            // Update card titles during the same iteration because reasons
-            this.#indicator = this.#indicator.trim();
-            const prefix = `${this.#indicator}\u200B`;
-            for (const card of storyCards) {
-                // Remove indicators from all cards
-                deindicate(card);
-                if ((this.#card === null) && isAgent(card)) {
-                    // Found the brain card, add the indicator prefix
-                    if (this.#indicator !== "") {
                         card.title = (card.title === "") ? prefix : `${prefix} ${card.title}`;
                     }
                     this.#card = card;
@@ -1053,7 +519,7 @@ function InnerSelf(hook) {
      */
     const getPrevAction = () => history.findLast(a => !/^[\u200B-\u200D]*$/.test(a?.text ?? a?.rawText ?? ""));
     // ==================== CONTEXT HOOK ====================
-    // This is where (half) of the magic happens: Inner Self injects brains and tasks into context
+    // This is where (half) of the magic happens: QuillScript injects brains and tasks into context
     // Infer the current lifecycle hook
     if ((hook === "context") || Number.isInteger(info.maxChars)) {
         // Calculate the player's context limit with a small buffer
@@ -1083,7 +549,7 @@ function InnerSelf(hook) {
                     api.setBannedTitles([
                         "Inner",
                         "Self",
-                        "Configure Inner Self",
+                        "Configure QuillScript",
                         "Agent",
                         ...api.getBannedTitles(),
                     ]);
@@ -1131,14 +597,14 @@ function InnerSelf(hook) {
             }
         }
         if (!config.allow) {
-            // Early exit if Inner Self is disabled
+            // Early exit if QuillScript is disabled
             IS.encoding = "";
             text ||= " ";
             return;
         }
         /**
          * Removes visual indicators from all story cards
-         * Called when no agent is triggered or Inner Self is disabled
+         * Called when no agent is triggered or QuillScript is disabled
          * @returns {void}
          */
         const deindicateAll = () => {
@@ -1367,7 +833,7 @@ function InnerSelf(hook) {
          * Generates possessive form of a name
          * Handles names ending in s or already possessive
          * @param {string} name - The name to make possessive
-         * @returns {string} Possessive form (e.g., "Iris'" or "Leah's")
+         * @returns {string} Possessive form (e.g., "Iris'" or "Alex's")
          */
         const ownership = (name = "") => `${name}${(
             (name.endsWith("'") || name.endsWith("'s"))
@@ -2147,10 +1613,10 @@ Follow the format **perfectly**.
         // Print the detailed guide
         text = `
 >>> Guide:
-Inner Self was made by LewdLeah ❤️
+QuillScript was made by Anonymous ❤️
 
 💡 Overview:
-Inner Self ${version} is an AI Dungeon mod that grants memory, goals, secrets, planning, and self-reflection capabilities to the characters living within your story. Simulated agents dynamically assemble their own minds to learn from experiences, form opinions, and adapt their behavior over time. Inner Self provides the AI with the tools it needs to truly embody characters, allowing them to feel more alive and nuanced over long adventures.
+QuillScript is an AI Dungeon mod that grants memory, goals, secrets, planning, and self-reflection capabilities to the characters living within your story. Simulated agents dynamically assemble their own minds to learn from experiences, form opinions, and adapt their behavior over time. QuillScript provides the AI with the tools it needs to truly embody characters, allowing them to feel more alive and nuanced over long adventures.
 
 📌 Features:
 - Compartmentalized memory and highly emergent behavior
@@ -2164,7 +1630,7 @@ Inner Self ${version} is an AI Dungeon mod that grants memory, goals, secrets, p
 - Open source and free to use in your own scenarios~ ❤️
 
 🎭 Setup:
-1. Open the "Configure Inner Self" story card
+1. Open the "Configure QuillScript" story card
 2. Write your player character's name where it asks in the entry
 3. Write non-player character names at the bottom of the notes (one per line)
 
@@ -2172,9 +1638,9 @@ Inner Self ${version} is an AI Dungeon mod that grants memory, goals, secrets, p
 - Use simple first names so NPCs trigger when mentioned
 - Set your AI response length to 200 tokens for the best results
 - Reduce "recent turns searched" if NPCs stay in-scene for too long
-- Reduce "thought formation chance" if Inner Self is too overwhelming
-- You can install or uninstall Auto-Cards from the Inner Self config card
-- Creators predefine Inner Self NPCs by naming story cards like so: @Leah
+- Reduce "thought formation chance" if QuillScript is too overwhelming
+- You can install or uninstall Auto-Cards from the QuillScript config card
+- Creators predefine QuillScript NPCs by naming story cards like so: @Alex
 - Try different story models to see how they perform
 
 🧠 Advanced:
@@ -2182,15 +1648,15 @@ Inner Self ${version} is an AI Dungeon mod that grants memory, goals, secrets, p
 - Entry = operation log showing a timeline of recent AI changes
 - Notes = human-readable thoughts stored as modifiable JSON in the NPC's brain
 - Neither are perfect representations of the NPC's brain (there's a lot more going on under the hood)
-- The operation log displays change over time; Inner Self allows NPCs to maintain their own thoughts in-character
+- The operation log displays change over time; QuillScript allows NPCs to maintain their own thoughts in-character
 - What seems like repetition in the operation log is often a history of useful self-maintenance on older thoughts
-- Edit the notes section of a brain card to modify that agent's mind; Inner Self will use this to build context
+- Edit the notes section of a brain card to modify that agent's mind; QuillScript will use this to build context
 - Valid JSON syntax is required in the notes section
-- Experiments are fun! I designed Inner Self to be adaptive and flexible
+- Experiments are fun! I designed QuillScript to be adaptive and flexible
 
 ⚙️ Settings:
 
-> Enable Inner Self:
+> Enable QuillScript:
 - Turns the whole system on or off
 - (true or false)
 
@@ -2212,7 +1678,7 @@ Inner Self ${version} is an AI Dungeon mod that grants memory, goals, secrets, p
 - (1% to 95%)
 
 > Recent turns searched for name triggers:
-- How far back through your previous actions Inner Self looks to decide which NPC (if any) should think
+- How far back through your previous actions QuillScript looks to decide which NPC (if any) should think
 - (1 to 250)
 
 > Visual indicator of current NPC triggers:
@@ -2242,15 +1708,15 @@ Inner Self ${version} is an AI Dungeon mod that grants memory, goals, secrets, p
 - (true or false)
 
 > Install Auto-Cards:
-- Enables automatic story card generation alongside Inner Self
+- Enables automatic story card generation alongside QuillScript
 - You can safely uninstall Auto-Cards at any time
 - (true or false)
 
 🌸 Love:
-- Please remember this is a personal passion project for me, something I do as a hobby, not as a job
-- Follow me on AI Dungeon to explore my other projects: ${u}
-- If you see me on Discord (@LewdLeah), Reddit (u/helloitsmyalt_), or anywhere else, please say hi!
-- Your kindness, patience, and love mean so much to me~ ❤️
+- Please remember this is a personal passion project, something done as a hobby, not as a job
+- Follow the project on AI Dungeon to explore other projects
+- If you see the project on Discord, Reddit, or anywhere else, please say hi!
+- Your kindness, patience, and love are appreciated~ ❤️
 
 I hope you will have lots of fun!
 (please erase before continuing) <<<
@@ -2259,7 +1725,7 @@ I hope you will have lots of fun!
         IS.agent = "";
         return;
     } else if (!config.allow) {
-        // Early exit if Inner Self is disabled
+        // Early exit if QuillScript is disabled
         text ||= "\u200B";
         IS.agent = "";
         return;
@@ -2792,15 +2258,6 @@ I hope you will have lots of fun!
     return;
 }
 
-//—————————————————————————————————————————————————————————————————————————————————————
-
-/**
- * Auto-Cards v1.1.3
- * Made by LewdLeah on May 21, 2025
- * This AI Dungeon script automatically creates and updates plot-relevant story cards while you play
- * General-purpose usefulness and compatibility with other scenarios/scripts were my design priorities
- * Auto-Cards is fully open-source, please copy for use within your own projects! ❤️
- */
 function AutoCards(inHook, inText, inStop) {
     "use strict"; const S = {
     /*
@@ -2971,7 +2428,7 @@ function AutoCards(inHook, inText, inStop) {
     */
 
     /*** Postpones internal Auto-Cards events for a specified number of turns
-    * 
+    *
     * @function
     * @param {number} turns A non-negative integer representing the number of turns to postpone events
     * @returns {Object} An object containing cooldown values affected by the postponement
@@ -2980,7 +2437,7 @@ function AutoCards(inHook, inText, inStop) {
     // AutoCards().API.postponeEvents();
 
     /*** Sets or clears the emergency halt flag to pause Auto-Cards operations
-    * 
+    *
     * @function
     * @param {boolean} shouldHalt A boolean value indicating whether to engage (true) or disengage (false) emergency halt
     * @returns {boolean} The value that was set
@@ -2989,7 +2446,7 @@ function AutoCards(inHook, inText, inStop) {
     // AutoCards().API.emergencyHalt();
 
     /*** Enables or disables state.message assignments from Auto-Cards
-    * 
+    *
     * @function
     * @param {boolean} shouldSuppress If true, suppresses all Auto-Cards messages; false enables them
     * @returns {Array} The current pending messages after setting suppression
@@ -2998,7 +2455,7 @@ function AutoCards(inHook, inText, inStop) {
     // AutoCards().API.suppressMessages();
 
     /*** Logs debug information to the "Debug Log card console
-    * 
+    *
     * @function
     * @param {...any} args Arguments to log for debugging purposes
     * @returns {any} The story card object reference
@@ -3006,7 +2463,7 @@ function AutoCards(inHook, inText, inStop) {
     // AutoCards().API.debugLog();
 
     /*** Toggles Auto-Cards behavior or sets it directly
-    * 
+    *
     * @function
     * @param {boolean|null|undefined} toggleType If undefined, toggles the current state. If boolean or null, sets the state accordingly
     * @returns {boolean|null|undefined} The state that was set or inferred
@@ -3015,41 +2472,41 @@ function AutoCards(inHook, inText, inStop) {
     // AutoCards().API.toggle();
 
     /*** Generates a new card using optional prompt details or a card request object
-    * 
+    *
     * This function supports two usage modes:
-    * 
+    *
     * 1. Object Mode:
     *    Pass a single object containing card request parameters. The only mandatory property is "title"
     *    All other properties are optional and customize the card generation
-    * 
+    *
     *    Example:
     *    AutoCards().API.generateCard({
     *      type: "character",         // The category or type of the card; defaults to "class" if omitted
-    *      title: "Leah the Lewd",    // The card's title (required)
-    *      keysStart: "Lewd,Leah",    // Optional trigger keywords associated with the card
-    *      entryStart: "You are a woman named Leah.", // Existing content to prepend to the AI-generated entry
+    *      title: "Alex the Adventurer",    // The card's title (required)
+    *      keysStart: "Alex,Adventurer",    // Optional trigger keywords associated with the card
+    *      entryStart: "You are a man named Alex.", // Existing content to prepend to the AI-generated entry
     *      entryPrompt: "",           // Global prompt guiding AI content generation
-    *      entryPromptDetails: "Focus on Leah's works of artifice and ingenuity", // Additional prompt info
+    *      entryPromptDetails: "Focus on Alex's works of artifice and ingenuity", // Additional prompt info
     *      entryLimit: 600,           // Target character length for the AI-generated entry
     *      description: "Player character!", // Freeform notes
-    *      memoryStart: "Leah purchased a new sweater.", // Existing memory content
+    *      memoryStart: "Alex purchased a new sweater.", // Existing memory content
     *      memoryUpdates: true,       // Whether the card's memory bank will update on its own
     *      memoryLimit: 3200          // Preferred memory bank size before summarization/compression
     *    });
-    * 
+    *
     * 2. String Mode:
     *    Pass a string as the title and optionally two additional strings to specify prompt details
     *    This mode is shorthand for quick card generation without an explicit card request object
-    * 
+    *
     *    Examples:
-    *    AutoCards().API.generateCard("Leah the Lewd");
-    *    AutoCards().API.generateCard("Leah the Lewd", "Focus on Leah's works of artifice and ingenuity");
+    *    AutoCards().API.generateCard("Alex the Adventurer");
+    *    AutoCards().API.generateCard("Alex the Adventurer", "Focus on Alex's works of artifice and ingenuity");
     *    AutoCards().API.generateCard(
-    *      "Leah the Lewd",
-    *      "Focus on Leah's works of artifice and ingenuity",
-    *      "You are a woman named Leah."
+    *      "Alex the Adventurer",
+    *      "Focus on Alex's works of artifice and ingenuity",
+    *      "You are a man named Alex."
     *    );
-    * 
+    *
     * @function
     * @param {Object|string} request Either a fully specified card request object or a string title
     * @param {string} [extra1] Optional detailed prompt text when using string mode
@@ -3135,7 +2592,7 @@ function AutoCards(inHook, inText, inStop) {
 
     /*** Finds and returns story cards satisfying a user-defined condition
     * Example:
-    * const leahCard = AutoCards().API.getCard(card => (card.title === "Leah"));
+    * const alexCard = AutoCards().API.getCard(card => (card.title === "Alex"));
     *
     * @function
     * @param {Function} predicate A function which takes a card and returns true if it matches
@@ -3147,7 +2604,7 @@ function AutoCards(inHook, inText, inStop) {
 
     /*** Removes story cards based on a user-defined condition or by direct reference
     * Example:
-    * AutoCards().API.eraseCard(card => (card.title === "Leah"));
+    * AutoCards().API.eraseCard(card => (card.title === "Alex"));
     *
     * @function
     * @param {Function|Object} predicate A predicate function or a card object reference
@@ -3158,117 +2615,6 @@ function AutoCards(inHook, inText, inStop) {
     // AutoCards().API.eraseCard();
 
     //—————————————————————————————————————————————————————————————————————————————————
-
-    /*
-    To everyone who helped, thank you:
-
-    AHotHamster22
-    Most extensive testing, feedback, ideation, and kindness
-
-    BinKompliziert
-    UI feedback
-
-    Boo
-    Discord communication
-
-    bottledfox
-    API ideas for alternative card generation use-cases
-
-    Bruno
-    Most extensive testing, feedback, ideation, and kindness
-    https://play.aidungeon.com/profile/Azuhre
-
-    Burnout
-    Implementation improvements, algorithm ideas, script help, and LSIv2 inspiration
-
-    bweni
-    Testing
-
-    DebaczX
-    Most extensive testing, feedback, ideation, and kindness
-
-    Dirty Kurtis
-    Card entry generation prompt engineering
-
-    Dragranis
-    Provided the memory dataset used for boundary calibration
-
-    effortlyss
-    Data, testing, in-game command ideas, config settings, and other UX improvements
-
-    Hawk
-    Grammar and special-cased proper nouns
-
-    Idle Confusion
-    Testing
-    https://play.aidungeon.com/profile/Idle%20Confusion
-
-    ImprezA
-    Most extensive testing, feedback, ideation, and kindness
-    https://play.aidungeon.com/profile/ImprezA
-
-    Kat-Oli
-    Title parsing, grammar, and special-cased proper nouns
-
-    KryptykAngel
-    LSIv2 ideas
-    https://play.aidungeon.com/profile/KryptykAngel
-
-    Mad19pumpkin
-    API ideas
-    https://play.aidungeon.com/profile/Mad19pumpkin
-
-    Magic
-    Implementation and syntax improvements
-    https://play.aidungeon.com/profile/MagicOfLolis
-
-    Mirox80
-    Testing, feedback, and scenario integration ideas
-    https://play.aidungeon.com/profile/Mirox80
-
-    Nathaniel Wyvern
-    Testing
-    https://play.aidungeon.com/profile/NathanielWyvern
-
-    NobodyIsUgly
-    All-caps title parsing feedback
-
-    OnyxFlame
-    Card memory bank implementation ideas and special-cased proper nouns
-
-    Purplejump
-    API ideas for deep integration with other AID scripts
-
-    Randy Viosca
-    Context injection and card memory bank structure
-    https://play.aidungeon.com/profile/Random_Variable
-
-    RustyPawz
-    API ideas for simplified card interaction
-    https://play.aidungeon.com/profile/RustyPawz
-
-    sinner
-    Testing
-
-    Sleepy pink
-    Testing and feedback
-    https://play.aidungeon.com/profile/Pinkghost
-
-    Vutinberg
-    Memory compression ideas and prompt engineering
-
-    Wilmar
-    Card entry generation and memory summarization prompt engineering
-
-    Yi1i1i
-    Idea for the redoCard API function and "/ac redo" in-game command
-
-    A note to future individuals:
-    If you fork or modify Auto-Cards... Go ahead and put your name here too! Yay! 🥰
-    */
-
-    //—————————————————————————————————————————————————————————————————————————————————
-
     /*
     The code below implements Auto-Cards
     Enjoy! ❤️
@@ -3545,13 +2891,13 @@ function AutoCards(inHook, inText, inStop) {
             CODOMAIN.initialize(null);
         } else {
             // AutoCards was (probably) called without arguments, return an external API to allow other script creators to programmatically govern the behavior of Auto-Cards from elsewhere within their own scripts
-            state.InnerSelf ??= {};
-            state.InnerSelf.AC ??= {};
-            state.InnerSelf.AC.forced = true;
+            state.QuillScript ??= {};
+            state.QuillScript.AC ??= {};
+            state.QuillScript.AC.forced = true;
             CODOMAIN.initialize({API: O.f(Object.fromEntries(Object.entries({
                 // Call these API functions like so: AutoCards().API.nameOfFunction(argumentsOfFunction)
                 /*** Postpones internal Auto-Cards events for a specified number of turns
-                * 
+                *
                 * @function
                 * @param {number} turns A non-negative integer representing the number of turns to postpone events
                 * @returns {Object} An object containing cooldown values affected by the postponement
@@ -3572,7 +2918,7 @@ function AutoCards(inHook, inText, inStop) {
                     };
                 },
                 /*** Sets or clears the emergency halt flag to pause Auto-Cards operations
-                * 
+                *
                 * @function
                 * @param {boolean} shouldHalt A boolean value indicating whether to engage (true) or disengage (false) emergency halt
                 * @returns {boolean} The value that was set
@@ -3594,7 +2940,7 @@ function AutoCards(inHook, inText, inStop) {
                     return shouldHalt;
                 },
                 /*** Enables or disables state.message assignments from Auto-Cards
-                * 
+                *
                 * @function
                 * @param {boolean} shouldSuppress If true, suppresses all Auto-Cards messages; false enables them
                 * @returns {Array} The current pending messages after setting suppression
@@ -3611,7 +2957,7 @@ function AutoCards(inHook, inText, inStop) {
                     return AC.message.pending;
                 },
                 /*** Logs debug information to the "Debug Log" console card
-                * 
+                *
                 * @function
                 * @param {...any} args Arguments to log for debugging purposes
                 * @returns {any} The story card object reference
@@ -3620,7 +2966,7 @@ function AutoCards(inHook, inText, inStop) {
                     return Internal.debugLog(...args);
                 },
                 /*** Toggles Auto-Cards behavior or sets it directly
-                * 
+                *
                 * @function
                 * @param {boolean|null|undefined} toggleType If undefined, toggles the current state. If boolean or null, sets the state accordingly
                 * @returns {boolean|null|undefined} The state that was set or inferred
@@ -3645,7 +2991,7 @@ function AutoCards(inHook, inText, inStop) {
                     return toggleType;
                 },
                 /*** Generates a new card using optional prompt details or a request object
-                * 
+                *
                 * @function
                 * @param {Object|string} request A request object with card parameters or a string representing the title
                 * @param {string} [extra1] Optional entryPromptDetails if using string mode
@@ -4053,40 +3399,40 @@ function AutoCards(inHook, inText, inStop) {
                     "    text = formatMessage(\"You encounter a dragon!\");",
                     "    log(\"A dragon appears!\");",
                     "}],",
-                    "[\"summon leah\", () => {",
+                    "[\"summon alex\", () => {",
                     "    alterMind();",
                     "    const success = AutoCards().API.generateCard({",
-                    "        title: \"Leah\",",
+                    "        title: \"Alex\",",
                     "        entryPromptDetails: (",
-                    "            \"Leah is an exceptionally \" +",
+                    "            \"Alex is an exceptionally \" +",
                     "            minds[state.mind] +",
                     "            \" woman\"",
                     "        ),",
-                    "        entryStart: \"Leah is your magically summoned assistant.\"",
+                    "        entryStart: \"Alex is your magically summoned assistant.\"",
                     "    });",
                     "    if (success) {",
-                    "        text = formatMessage(\"You begin summoning Leah!\");",
-                    "        log(\"Attempting to summon Leah\");",
+                    "        text = formatMessage(\"You begin summoning Alex!\");",
+                    "        log(\"Attempting to summon Alex\");",
                     "    } else {",
-                    "        text = formatMessage(\"You failed to summon Leah...\");",
-                    "        log(\"Leah could not be summoned\");",
+                    "        text = formatMessage(\"You failed to summon Alex...\");",
+                    "        log(\"Alex could not be summoned\");",
                     "    }",
                     "}],",
-                    "[\"alter leah\", () => {",
+                    "[\"alter alex\", () => {",
                     "    alterMind();",
-                    "    const success = AutoCards().API.redoCard(\"Leah\", true, (",
-                    "        \"You used your magic on Leah\\n\" +",
+                    "    const success = AutoCards().API.redoCard(\"Alex\", true, (",
+                    "        \"You used your magic on Alex\\n\" +",
                     "        \"Therefore she is now entirely \" +",
                     "        minds[state.mind]",
                     "    ));",
                     "    if (success) {",
                     "        text = formatMessage(",
-                    "            \"You proceed to alter Leah's mind!\"",
+                    "            \"You proceed to alter Alex's mind!\"",
                     "        );",
-                    "        log(\"Attempting to alter Leah\");",
+                    "        log(\"Attempting to alter Alex\");",
                     "    } else {",
-                    "        text = formatMessage(\"You failed to alter Leah...\");",
-                    "        log(\"Leah could not be altered\");",
+                    "        text = formatMessage(\"You failed to alter Alex...\");",
+                    "        log(\"Alex could not be altered\");",
                     "    }",
                     "}],",
                     "[\"show api\", () => {",
@@ -4952,7 +4298,7 @@ function AutoCards(inHook, inText, inStop) {
                             continue;
                         }
                         const words = (prettifyEmDashes(action.text)
-                            // Inner Self
+                            // QuillScript
                             .replace(/\s*[\u200B-\u200D][\s\u200B-\u200D]*/g, " ")
                             // Localized Languages
                             .replace(/\s*[–«»„“”「」—]\s*/g, ": ")
@@ -5622,9 +4968,9 @@ function AutoCards(inHook, inText, inStop) {
                 );
             }
             if (isGenerating || isCompressing) {
-                state.InnerSelf ??= {};
-                state.InnerSelf.AC ??= {};
-                state.InnerSelf.AC.event = true;
+                state.QuillScript ??= {};
+                state.QuillScript.AC ??= {};
+                state.QuillScript.AC.event = true;
                 if (isGenerating) {
                     // Likewise for the card entry generation delimiter
                     context = context.replaceAll("%@GEN@%", "");
@@ -6497,7 +5843,7 @@ function AutoCards(inHook, inText, inStop) {
             ],
             guide: () => prose(
                 ">>> Detailed Guide:",
-                "Auto-Cards was made by LewdLeah ❤️",
+                "Auto-Cards was made by Anonymous ❤️",
                 "",
                 Words.delimiter,
                 "",
@@ -6598,23 +5944,23 @@ function AutoCards(inHook, inText, inStop) {
                 "",
                 "/ac Your Title Goes Here",
                 "Will immediately begin generating a new story card with the given title",
-                "Example use: \"/ac Leah\"",
+                "Example use: \"/ac Alex\"",
                 "",
                 "/ac Your Title Goes Here / Your extra prompt details go here",
                 "Similar to the previous case, but with additional context to include with the card generation prompt",
-                "Example use: \"/ac Leah / Focus on Leah's works of artifice and ingenuity\"",
+                "Example use: \"/ac Alex / Focus on Alex's works of artifice and ingenuity\"",
                 "",
                 "/ac Your Title Goes Here / Your extra prompt details go here / Your starter entry goes here",
                 "Again, similar to the previous case, but with an initial card entry for the generator to build upon",
-                "Example use: \"/ac Leah / Focus on Leah's works of artifice and ingenuity / You are a woman named Leah.\"",
+                "Example use: \"/ac Alex / Focus on Alex's works of artifice and ingenuity / You are a man named Alex.\"",
                 "",
                 "/ac redo Your Title Goes Here",
                 "Rewrites your chosen story card, using the old card entry, memory bank, and story context for inspiration. Useful for recreating cards after important character development has occurred",
-                "Example use: \"/ac redo Leah\"",
+                "Example use: \"/ac redo Alex\"",
                 "",
                 "/ac redo Your Title Goes Here / New info goes here",
                 "Similar to the previous case, but with additional info provided to guide the rewrite according to your additional specifications",
-                "Example use: \"/ac redo Leah / Leah recently achieved immortality\"",
+                "Example use: \"/ac redo Alex / Alex recently achieved immortality\"",
                 "",
                 "/ac redo all",
                 "Recreates every single auto-card in your adventure. I must warn you though: This is very risky",
@@ -6697,7 +6043,7 @@ function AutoCards(inHook, inText, inStop) {
                 "- If Auto-Cards goes overboard with new cards, you can pause it by setting the cooldown config to 9999",
                 "- Write \"{title:}\" anywhere within a regular story card's entry to transform it into an automatic card",
                 "- Feel free to import/export entire story card decks at any time",
-                "- Please copy my source code from here: https://play.aidungeon.com/profile/LewdLeah",
+                "- Please copy the source code from the project repository",
                 "",
                 Words.delimiter,
                 "",
@@ -7779,7 +7125,7 @@ function AutoCards(inHook, inText, inStop) {
                     ), true));
                     let count = 0;
                     for (const card of redo) {
-                        const titleMatch = card.entry.match(titleMatchPattern);  
+                        const titleMatch = card.entry.match(titleMatchPattern);
                         if (titleMatch && Internal.redoCard(O.f({title: titleMatch[1]}), true, "")) {
                             count++;
                         }
@@ -8200,7 +7546,7 @@ function AutoCards(inHook, inText, inStop) {
     }
     function getTurn() {
         if (Number.isInteger(info?.actionCount)) {
-            // "But Leah, surely info.actionCount will never be negative?"
+            // "But Alex, surely info.actionCount will never be negative?"
             // You have no idea what nightmares I've seen...
             return Math.abs(info.actionCount);
         } else {
@@ -8294,7 +7640,7 @@ function AutoCards(inHook, inText, inStop) {
             return end();
         }
         title = (title
-            // Inner Self
+            // QuillScript
             .slice(title.indexOf("\u200B") + 1)
             .replace(/\u200B-\u200D/g, "")
             // Localized Languages
@@ -8548,7 +7894,7 @@ function AutoCards(inHook, inText, inStop) {
             && (2 < titleWords[0].length)
             && (2 < titleWords[1].length)
             && forenames.has(titleWords[0])
-        ) {         
+        ) {
             return true;
         } else if (
             (titleWords.length === 1)
@@ -8735,7 +8081,7 @@ function AutoCards(inHook, inText, inStop) {
                 keys: primaryVariant.keys,
                 entry: (function() {
                     const mutualEntry = (
-                        "If you encounter an Auto-Cards bug or otherwise wish to help me improve this script by sharing your configs and game data, please send me the notes text found below. You may ping me @LewdLeah through the official AI Dungeon Discord server. Please ensure the content you share is appropriate for the server, otherwise DM me instead. 😌"
+                        "If you encounter an Auto-Cards bug or otherwise wish to help improve this script by sharing your configs and game data, please send the notes text found below. Please ensure the content you share is appropriate for the server. 😌"
                     );
                     if (memoryOverflow) {
                         return (
@@ -8781,3 +8127,4 @@ function AutoCards(inHook, inText, inStop) {
 } function isolateLSIv2(code, log, text, stop) { const console = Object.freeze({log}); try { eval(code); return [null, text, stop]; } catch (error) { return [error, text, stop]; } }
 
 // Your other library scripts go here
+
