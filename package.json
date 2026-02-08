@@ -1,0 +1,13 @@
+{
+  "name": "quillscript",
+  "version": "1.0.0",
+  "description": "Made by UmbraQuill ❤️",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "build": "node build.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

@@ -1,14 +1,18 @@
-# QuillScript 🎭
-### *Giving characters minds of their own~*
-Made by Anonymous ❤️
+# QuillScript 🪶
+### *Fully passive narrative improvements for AI Dungeon*
+Made by UmbraQuill ❤️
+Forked from *Inner Self*
 
 ---
 
 ## Overview
 
-QuillScript is an AI Dungeon mod that grants memory, goals, secrets, planning, and self-reflection capabilities to the characters living in your story. Simulated agents build and maintain their own minds to learn from experiences, form opinions, and adapt their behavior over time. QuillScript provides the AI with the tools it needs to truly embody characters, allowing them to feel more alive and nuanced over long adventures.
+QuillScript is a **fully passive** AI Dungeon mod that quietly improves story continuity, character consistency, and long-term narrative coherence.
 
-In some ways this is the spiritual successor to Auto-Cards, which is already included with QuillScript and can be enabled at any time.
+It does **not** add explicit agents, editable NPC minds, commands, UI elements, or configuration.
+Once installed, QuillScript runs automatically in the background, refining context, memory usage, and text quality without interrupting gameplay or player agency.
+
+If a feature cannot be made passive, it is intentionally removed.
 
 ---
 
@@ -16,164 +20,92 @@ In some ways this is the spiritual successor to Auto-Cards, which is already inc
 
 | Feature | Description |
 |:--------|:------------|
-| **Segmented Memory** | Each NPC maintains their own private thoughts, separate from other characters |
-| **Self-Organizing Thoughts** | Characters agentically revise, prune, and maintain their own mental state |
-| **Zero Immersion Breaks** | Absolutely NO "please select continue" messages (!!!) |
-| **Real-Time Brain Editor** | View or edit any NPC brain in the associated story card notes |
-| **Name-Based Triggers** | Different NPCs coexist seamlessly, activating when mentioned in the story |
-| **Visual Indicators** | See exactly which character is thinking at any given moment |
-| **Universal Compatibility** | General-purpose design works across diverse character archetypes and scenarios |
-| **Auto-Cards Integration** | Fully merged for comprehensive world-building (optional) |
+| **Passive Context Optimization** | Automatically stabilizes story context and reduces drift |
+| **Character Consistency** | Improves perspective, dialogue, and role continuity over time |
+| **Memory Pruning** | Silently compresses and prioritizes relevant narrative details |
+| **Text Normalization** | Cleans and formats input/output automatically |
+| **Zero Immersion Breaks** | No prompts, indicators, debug text, or UI elements |
+| **Universal Compatibility** | Works with any genre, PoV, or story style |
+
+---
+
+## What QuillScript Does *Not* Do
+
+- No NPC “brains” or editable mind cards
+- No Auto-Cards
+- No name-based triggers
+- No visual indicators
+- No config cards or settings
+- No commands or activation steps
 
 ---
 
 ## Permission
 
-QuillScript is both free and open-source for anyone to use in their own scenarios or scripts, even published ones. You have my full permission to use, copy, or modify QuillScript. Please enjoy! ❤️
+QuillScript is free and open-source.
+You are welcome to use, fork, modify, or publish it in your own scenarios or scripts. ❤️
 
 ---
 
 ## Scenario Script Install Guide
-1. Use the [AI Dungeon website](https://aidungeon.com/) on PC (or view as desktop if mobile-only)
-2. [Create a new scenario](https://help.aidungeon.com/faq/what-are-scenarios) or edit an existing scenario
-3. Open the `DETAILS` tab at the top while editing your scenario
-4. Scroll down to `Scripting` and toggle ON → `Scripts Enabled`
-5. Select `EDIT SCRIPTS`
-6. Select the `Input` tab on the left
-7. Delete all code within said tab
-8. Copy and paste the following code into your empty `Input` tab:
-```javascript
-// Your "Input" tab should look like this
+
+1. Use the [AI Dungeon website](https://aidungeon.com/) (desktop view)
+2. Create or edit a scenario
+3. Open the `DETAILS` tab → enable `Scripts`
+4. Select `EDIT SCRIPTS`
+
+### Input tab
+
+```js
 QuillScript("input");
-const modifier = (text) => {
-  // Any other input modifier scripts can go here
-  return { text };
-};
+const modifier = (text) => ({ text });
 modifier(text);
 ```
-9. Select the `Context` tab on the left
-10. Delete all code within said tab
-11. Copy and paste the following code into your empty `Context` tab:
-```javascript
-// Your "Context" tab should look like this
+
+### Context tab
+
+```js
 QuillScript("context");
-const modifier = (text) => {
-  // Any other context modifier scripts can go here
-  return { text, stop };
-};
+const modifier = (text) => ({ text, stop });
 modifier(text);
 ```
-12. Select the `Output` tab on the left
-13. Delete all code within said tab
-14. Copy and paste the following code into your empty `Output` tab:
-```javascript
-// Your "Output" tab should look like this
+
+### Output tab
+
+```js
 QuillScript("output");
-const modifier = (text) => {
-  // Any other output modifier scripts can go here
-  return { text };
-};
+const modifier = (text) => ({ text });
 modifier(text);
 ```
-15. Select the `Library` tab on the left
-16. Delete all code within said tab
-17. Open the Library code (hyperlink below) in a new browser tab
-- [Library code](./src/library.js)
-18. Copy the *full* code from the page above and paste into your empty `Library` tab
-19. Click the big yellow `SAVE` button in the top right corner
 
-### *And you're done!*
+### Library tab
 
-All adventures played from your scenario will now include QuillScript (even existing adventures)
+1. Delete all existing code
+2. Open the compiled library file:
+   - [Library code](./src/library.js)
+3. Copy **all** contents into the Library tab
+4. Click **SAVE**
 
-<sub>Remember to read the in-game config card!</sub>
+### Done
 
----
+All adventures using this scenario will now include QuillScript automatically.
 
-## Gameplay Tips
+## Gameplay Notes
 
-- Read the in-game config card to learn how to easily add NPCs
-- Set response length to 200 tokens if you notice short or empty outputs
-- Enable scripts if you don't see a config card (homepage > settings > gameplay)
-- Protect your mental health: QuillScript is intended to be a narrative experience only
-- Plot components matter because the AI sees them when writing thoughts
-- Different story models also tend to manage brains differently
-- But avoid Atlas and Raven models for this one 😅
+- No setup or configuration is required
+- Write normally — QuillScript adapts silently
+- Especially effective in long-running stories
+- Safe to remove at any time
 
 ---
 
-## For Creators
+## Credits
+- Original project: [Inner Self](https://github.com/LewdLeah/Inner-Self)
+- Passive refactor and continuation: **UmbraQuill**
 
-### Creator Control Panel
-At the very top of the QuillScript `Library` script tab, you'll find optional settings with simple explanations. Modify these before publishing to customize your scenario's default experience.
-
-### Preparing Scenario NPCs
-To work on its own, provide QuillScript with the names of your scenario's most important NPCs. QuillScript will create a new brain card for each NPC you prepare, after their name appears in the story. (Kinda like story card triggers, if that makes sense!) Brains are created on-demand to avoid overwhelming players.
-
-Creators provide QuillScript with scenario NPC names in one of two ways:
-
-<details>
-<summary><b>regular method (click to expand)</b></summary>
-
-In the creator control panel near the top of your `Library` script tab:
-```javascript
-// List the first name of every scenario NPC whose brain should be simulated by QuillScript:
-IMPORTANT_SCENARIO_CHARACTERS: ""
-// (write a comma separated list of names inside the "" like so: "Alex, Lily, Lydia")
-```
-Simply list your NPC names inside the quotations. Then click the yellow `SAVE` button!
-
-</details>
-
-<details>
-<summary><b>alternative method for mobile creators (click to expand)</b></summary>
-
-Prefix regular AID story card titles with the `@` symbol so QuillScript knows which characters should think:
-- Example card name: `@Alex`
-- Remember to use simple first names here!
-- This method is easier on mobile
-
-</details>
-
-### Custom NPC Brains
-QuillScript uses the full context of your scenario to form minds that follow your creative vision. No extra effort required.
-
-But if you want more advanced control:
-
-<details>
-<summary><b>initial thoughts (click to expand)</b></summary>
-
-1. Transfer any NPC brain card from adventure to scenario
-2. Leave the card entry completely empty
-3. Replace the notes section with any valid string-valued JSON
-4. Feel free to use an AI assistant to transform your concept into valid JSON by filling out the prompt below:
-````markdown
-# You are a JSON generator:
-- Always reply with valid JSON only, no extra text
-- Base your output on the instructions provided
-- Do not include comments or explanations
-
-## Overarching setting:
-```
-[Describe the setting of your scenario here!]
-```
-
-## Fictional character concept:
-```
-[Describe your character concept here!]
-```
-
-## Task instructions:
-Your task is to transform the character concept into a JSON object
-- The object should resemble a flat collection of key-value pairs
-- All values are strings written from the character's inner 1st person PoV
-- Values should be short single-sentence thoughts that capture core aspects
-- Keys use distinct and descriptive lower snake_case syntax
-- The object represents the character's identity of self
-- Be creative when roleplaying as the character
-- Respect the overarching setting
-````
-
-</details>
+## License
+Free and open-source ❤️
 
 ---
+
+Made with ❤️ by UmbraQuill
