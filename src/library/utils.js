@@ -11,21 +11,21 @@
  * @returns {Object} The mutated target object
  */
 const deepMerge = (target = {}, source = {}) => {
-    // Walk through every key in the source
-    for (const key in source) {
-        // Source value is a nested object, so recurse
-        if (source[key] && (typeof source[key] === "object") && !Array.isArray(source[key])) {
-            if (!target[key] || (typeof target[key] !== "object")) {
-                // Target doesn't have this key or it's not an object
-                target[key] = {};
-            }
-            deepMerge(target[key], source[key]);
-        } else if (target[key] === undefined) {
-            // Only copy if target doesn't already have this key
-            target[key] = source[key];
-        }
+  // Walk through every key in the source
+  for (const key in source) {
+    // Source value is a nested object, so recurse
+    if (source[key] && (typeof source[key] === "object") && !Array.isArray(source[key])) {
+      if (!target[key] || (typeof target[key] !== "object")) {
+        // Target doesn't have this key or it's not an object
+        target[key] = {};
+      }
+      deepMerge(target[key], source[key]);
+    } else if (target[key] === undefined) {
+      // Only copy if target doesn't already have this key
+      target[key] = source[key];
     }
-    return target;
+  }
+  return target;
 };
 
 /**
@@ -35,14 +35,14 @@ const deepMerge = (target = {}, source = {}) => {
  * @returns {string} Hexadecimal hash string
  */
 const historyHash = (history) => {
-    let n = 0;
-    // Grab the last 50 actions and stringify them
-    const serialized = JSON.stringify(history.slice(-50));
-    for (let i = 0; i < serialized.length; i++) {
-        // Classic polynomial rolling hash, nothing fancy
-        n = ((31 * n) + serialized.charCodeAt(i)) | 0;
-    }
-    return n.toString(16);
+  let n = 0;
+  // Grab the last 50 actions and stringify them
+  const serialized = JSON.stringify(history.slice(-50));
+  for (let i = 0; i < serialized.length; i++) {
+    // Classic polynomial rolling hash, nothing fancy
+    n = ((31 * n) + serialized.charCodeAt(i)) | 0;
+  }
+  return n.toString(16);
 };
 
 /**
@@ -54,24 +54,24 @@ const historyHash = (history) => {
  * @returns {Object} Parsed object or empty object on failure
  */
 const deserialize = (str = "", repair = false) => {
-    try {
-        const parsed = JSON.parse(repair ? (() => {
-            // All values will be strings I promise
-            // Find the first and last quote chars
-            const first = str.indexOf("\"");
-            const last = str.lastIndexOf("\"");
-            return (
-                ((first === -1) || (last === -1) || (last <= first))
-                ? "{}" : `{${str.slice(first, last + 1)}}`
-            );
-        })() : str);
-        if (parsed && (typeof parsed === "object") && !Array.isArray(parsed)) {
-            // Only return a proper object (not null, not array)
-            return parsed;
-        }
-    } catch {}
-    // That empty catch looks so dumb lol
-    return {};
+  try {
+    const parsed = JSON.parse(repair ? (() => {
+      // All values will be strings I promise
+      // Find the first and last quote chars
+      const first = str.indexOf("\"");
+      const last = str.lastIndexOf("\"");
+      return (
+        ((first === -1) || (last === -1) || (last <= first))
+          ? "{}" : `{${str.slice(first, last + 1)}}`
+      );
+    })() : str);
+    if (parsed && (typeof parsed === "object") && !Array.isArray(parsed)) {
+      // Only return a proper object (not null, not array)
+      return parsed;
+    }
+  } catch { }
+  // That empty catch looks so dumb lol
+  return {};
 };
 
 /**
@@ -81,18 +81,18 @@ const deserialize = (str = "", repair = false) => {
  * @returns {void}
  */
 const deindicate = (card = {}) => {
-    if (typeof card.title !== "string") {
-        // Cry
-        card.title = "";
-    } else if (card.title.includes("\u200B")) {
-        // Strip everything before and including the zero-width space
-        card.title = (card.title
-            .slice(card.title.indexOf("\u200B") + 1)
-            .replaceAll("\u200B", "")
-            .trim()
-        );
-    }
-    return;
+  if (typeof card.title !== "string") {
+    // Cry
+    card.title = "";
+  } else if (card.title.includes("\u200B")) {
+    // Strip everything before and including the zero-width space
+    card.title = (card.title
+      .slice(card.title.indexOf("\u200B") + 1)
+      .replaceAll("\u200B", "")
+      .trim()
+    );
+  }
+  return;
 };
 
 /**
@@ -110,25 +110,25 @@ const getPrevAction = (history) => history.findLast(a => !/^[\u200B-\u200D]*$/.t
  * @returns {string} Cleaned thought string
  */
 const simplify = (str = "") => {
-    str = (str
-        // Remove markdown-style formatting
-        .replace(/[#*~•·∙⋅]+/g, "")
-        // Normalize whitespace
-        .replace(/  +/g, " ")
-        .replace(/ ?\n ?/g, "\n")
-        // Standardize ellipsis
-        .replaceAll("…", "...")
-        // Fix possessive s's -> s' because DeepSeek is dumb
-        .replace(/([sS])(['‘’‛])[sS]/g, (_, s, q) => `${s}${q}`)
-        // Normalize dashes
-        .replace(/[–−‒]/g, "-")
-        .replace(/(?<=\S) [-—] (?=\S)/g, "—")
-    )
-    // Convert one lone em-dash to a semicolon if appropriate
-    return (
-        ((str.match(/—/g) || []).length === 1)
-        && !str.includes(";") && !str.endsWith("—") && !str.startsWith("—")
-    ) ? str.replace("—", "; ") : str;
+  str = (str
+    // Remove markdown-style formatting
+    .replace(/[#*~•·∙⋅]+/g, "")
+    // Normalize whitespace
+    .replace(/  +/g, " ")
+    .replace(/ ?\n ?/g, "\n")
+    // Standardize ellipsis
+    .replaceAll("…", "...")
+    // Fix possessive s's -> s' because DeepSeek is dumb
+    .replace(/([sS])(['‘’‛])[sS]/g, (_, s, q) => `${s}${q}`)
+    // Normalize dashes
+    .replace(/[–−‒]/g, "-")
+    .replace(/(?<=\S) [-—] (?=\S)/g, "—")
+  )
+  // Convert one lone em-dash to a semicolon if appropriate
+  return (
+    ((str.match(/—/g) || []).length === 1)
+    && !str.includes(";") && !str.endsWith("—") && !str.startsWith("—")
+  ) ? str.replace("—", "; ") : str;
 };
 
 /**
@@ -138,23 +138,23 @@ const simplify = (str = "") => {
  * @returns {string} Valid snake_case key name
  */
 const formatKey = (k = "") => (k
-    .trim()
-    // Take the first word only
-    .split(/\s/, 1)[0]
-    // Remove quotes and apostrophes
-    .replace(/[.'`´‘’]+/g, "")
-    // Replace non-alphanumerics with underscore
-    .replace(/[^a-z0-9A-Z_]/g, "_")
-    // Convert camelCase to snake_case
-    .replace(/([a-z0-9])([A-Z])/g, (_, a, b) => `${a}_${b.toLowerCase()}`)
-    .toLowerCase()
-    // Separate letters from numbers
-    .replace(/([a-z])([0-9])/g, (_, a, b) => `${a}_${b}`)
-    .replace(/([0-9])([a-z])/g, (_, a, b) => `${a}_${b}`)
-    // Clean up multiple underscores
-    .replace(/__+/g, "_")
-    // Remove leading/trailing underscores
-    .replace(/(?:^_|_$)/g, "")
+  .trim()
+  // Take the first word only
+  .split(/\s/, 1)[0]
+  // Remove quotes and apostrophes
+  .replace(/[.'`´‘’]+/g, "")
+  // Replace non-alphanumerics with underscore
+  .replace(/[^a-z0-9A-Z_]/g, "_")
+  // Convert camelCase to snake_case
+  .replace(/([a-z0-9])([A-Z])/g, (_, a, b) => `${a}_${b.toLowerCase()}`)
+  .toLowerCase()
+  // Separate letters from numbers
+  .replace(/([a-z])([0-9])/g, (_, a, b) => `${a}_${b}`)
+  .replace(/([0-9])([a-z])/g, (_, a, b) => `${a}_${b}`)
+  // Clean up multiple underscores
+  .replace(/__+/g, "_")
+  // Remove leading/trailing underscores
+  .replace(/(?:^_|_$)/g, "")
 );
 
 /**
@@ -165,8 +165,8 @@ const formatKey = (k = "") => (k
  * @returns {string} Path like "agent_name.brain" or "agent_name.key"
  */
 const path = (agentName = "", key = "brain") => {
-    const fancy = formatKey(agentName);
-    return (fancy === "") ? `agents[${JSON.stringify(agentName)}]` : fancy;
+  const fancy = formatKey(agentName);
+  return (fancy === "") ? `agents[${JSON.stringify(agentName)}]` : fancy;
 };
 
 /**
@@ -191,9 +191,9 @@ const rightOfColon = (s = "") => s.slice(s.lastIndexOf(":") + 1);
  * @returns {string} Possessive form (e.g., "Iris'" or "Alex's")
  */
 const ownership = (name = "") => `${name}${(
-    (name.endsWith("'") || name.endsWith("'s"))
+  (name.endsWith("'") || name.endsWith("'s"))
     ? "" : name.toLowerCase().endsWith("s")
-    ? "'" : "'s"
+      ? "'" : "'s"
 )}`;
 
 /**
@@ -203,7 +203,7 @@ const ownership = (name = "") => `${name}${(
  * @returns {string} System prompt for PoV guidance
  */
 const nondirective = (configPlayer = "", pov = 2) => (
-    `<SYSTEM>\n# Always continue the story from ${ownership(configPlayer)} ${["first", "second", "third"][pov - 1] ?? "second"} person perspective.\n</SYSTEM>`
+  `<SYSTEM>\n# Always continue the story from ${ownership(configPlayer)} ${["first", "second", "third"][pov - 1] ?? "second"} person perspective.\n</SYSTEM>`
 );
 
 /**
@@ -214,7 +214,7 @@ const nondirective = (configPlayer = "", pov = 2) => (
  * @returns {string} Formatted brain context block
  */
 const bindSelf = (agentName = "", joined = "") => ((joined === "") ? "\n\n" : (
-    `\n\n# ${ownership(agentName)} brain and QuillScript: [\n${joined}\n]\n\n`
+  `\n\n# ${ownership(agentName)} brain and QuillScript: [\n${joined}\n]\n\n`
 ));
 
 /**
@@ -226,24 +226,24 @@ const bindSelf = (agentName = "", joined = "") => ((joined === "") ? "\n\n" : (
  * @param {string} text - The text to modify (passed by reference? Wait, in JS it's by value)
  * @returns {void}
  */
-const setMarker = (substring = "", replacement = "", fallback = () => {}, text) => {
-    let start = text.indexOf(substring);
-    if (start === -1) {
-        // Do stuff
-        fallback();
-        return text;
-    }
-    let end = start + substring.length;
-    // Expand left over whitespace
-    while ((0 < start) && (text.charCodeAt(start - 1) < 33)) {
-        start--;
-    }
-    // Expand right over whitespace
-    while ((end < text.length) && (text.charCodeAt(end) < 33)) {
-        end++;
-    }
-    text = `${text.slice(0, start)}${replacement}${text.slice(end)}`;
+const setMarker = (substring = "", replacement = "", fallback = () => { }, text) => {
+  let start = text.indexOf(substring);
+  if (start === -1) {
+    // Do stuff
+    fallback();
     return text;
+  }
+  let end = start + substring.length;
+  // Expand left over whitespace
+  while ((0 < start) && (text.charCodeAt(start - 1) < 33)) {
+    start--;
+  }
+  // Expand right over whitespace
+  while ((end < text.length) && (text.charCodeAt(end) < 33)) {
+    end++;
+  }
+  text = `${text.slice(0, start)}${replacement}${text.slice(end)}`;
+  return text;
 };
 
 /**
@@ -253,10 +253,10 @@ const setMarker = (substring = "", replacement = "", fallback = () => {}, text) 
  * @returns {void}
  */
 const deindicateAll = (storyCards = []) => {
-    for (const card of storyCards) {
-        deindicate(card);
-    }
-    return;
+  for (const card of storyCards) {
+    deindicate(card);
+  }
+  return;
 };
 
 /**
@@ -266,7 +266,7 @@ const deindicateAll = (storyCards = []) => {
  * @returns {string} Formatted thoughts
  */
 const joinMind = (mind = [], unlabeled = false) => mind.map(([label, key, thought]) => (
-    `${unlabeled ? "" : `[${label}] `}(${key}: \`${thought}\`)`
+  `${unlabeled ? "" : `[${label}] `}(${key}: \`${thought}\`)`
 )).join("\n");
 
 /**
@@ -277,5 +277,5 @@ const joinMind = (mind = [], unlabeled = false) => mind.map(([label, key, though
  * @returns {string} Refocus instruction or empty string
  */
 const refocus = (fancy = false) => (Math.random() < 0.2) ? (
-    `\n  - Never focus on the present, instead focus on self-reflection or ${fancy ? "an actionable future plan." : "future plans"}`
+  `\n  - Never focus on the present, instead focus on self-reflection or ${fancy ? "an actionable future plan." : "future plans"}`
 ) : "";

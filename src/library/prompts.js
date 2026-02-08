@@ -4,9 +4,9 @@
  * @type {Object}
  */
 const prompt = new Proxy({
-    // Operating environment prompts (one per PoV)
-    directive: {
-        first: () => `
+  // Operating environment prompts (one per PoV)
+  directive: {
+    first: () => `
 <SYSTEM>
 # OPERATING ENVIRONMENT
 - ${config.player} is the story's main protagonist, primary 1st person PoV, AND the real player character.
@@ -18,7 +18,7 @@ const prompt = new Proxy({
 - ${agent.name} always behaves in a believable way.
 </SYSTEM>
         `,
-        second: () => `
+    second: () => `
 <SYSTEM>
 # OPERATING ENVIRONMENT
 - ${config.player} is both the perspective ("you") character of the story AND the real player.
@@ -31,7 +31,7 @@ const prompt = new Proxy({
 - ${agent.name} always behaves in a believable way.
 </SYSTEM>
         `,
-        third: () => `
+    third: () => `
 <SYSTEM>
 # OPERATING ENVIRONMENT
 - ${config.player} is the story's main protagonist, primary 3rd person PoV, AND the real player character.
@@ -43,10 +43,10 @@ const prompt = new Proxy({
 - ${agent.name} always behaves in a believable way.
 </SYSTEM>
         `
-    },
-    // Forget prompts for when the brain is full and needs pruning
-    forget: {
-        first: () => `
+  },
+  // Forget prompts for when the brain is full and needs pruning
+  forget: {
+    first: () => `
 <SYSTEM>
 # STRICT OUTPUT FORMAT
 You must output one short parenthetical task followed by the story continuation.
@@ -67,7 +67,7 @@ You must output one short parenthetical task followed by the story continuation.
 (delete unwanted_key) Story continues from ${ownership(config.player)} perspective, using first person present tense prose...
 </SYSTEM>
         `,
-        second: () => `
+    second: () => `
 <SYSTEM>
 # STRICT OUTPUT FORMAT
 You must output one short parenthetical task followed by the story continuation.
@@ -88,7 +88,7 @@ You must output one short parenthetical task followed by the story continuation.
 (delete unwanted_key) Story continues from ${ownership(config.player)} second person perspective...
 </SYSTEM>
         `,
-        third: () => `
+    third: () => `
 <SYSTEM>
 # STRICT OUTPUT FORMAT
 You must output one short parenthetical task followed by the story continuation.
@@ -109,10 +109,10 @@ You must output one short parenthetical task followed by the story continuation.
 (delete unwanted_key) Story continues with third person prose...
 </SYSTEM>
         `
-    },
-    // Assign prompts for adding/updating a single thought
-    assign: {
-        first: () => `
+  },
+  // Assign prompts for adding/updating a single thought
+  assign: {
+    first: () => `
 <SYSTEM>
 # STRICT OUTPUT FORMAT
 You must output one short parenthetical task followed by the story continuation.
@@ -148,7 +148,7 @@ This creates or overwrites the thought associated with that key.
 (example_key = \`${ownership(agent.name)} own short 1-sentence thought in first person.\`) Story continues from ${ownership(config.player)} perspective, using first person present tense prose...
 </SYSTEM>
         `,
-        second: () => `
+    second: () => `
 <SYSTEM>
 # STRICT OUTPUT FORMAT
 You must output one short parenthetical task followed by the story continuation.
@@ -184,7 +184,7 @@ This creates or overwrites the thought associated with that key.
 (example_key = \`${ownership(agent.name)} own short 1-sentence thought in first person.\`) Story continues from ${ownership(config.player)} second person perspective...
 </SYSTEM>
         `,
-        third: () => `
+    third: () => `
 <SYSTEM>
 # STRICT OUTPUT FORMAT
 You must output one short parenthetical task followed by the story continuation.
@@ -220,11 +220,11 @@ This creates or overwrites the thought associated with that key.
 (example_key = \`${ownership(agent.name)} own short 1-sentence thought in first person.\`) Story continues with third person prose...
 </SYSTEM>
         `
-    },
-    // Choice prompts for advanced operations (assign, rename, or delete)
-    // Used at high context when we trust the model more
-    choice: {
-        first: () => `
+  },
+  // Choice prompts for advanced operations (assign, rename, or delete)
+  // Used at high context when we trust the model more
+  choice: {
+    first: () => `
 <SYSTEM>
 # STRICT OUTPUT FORMAT - FOLLOW EXACTLY
 
@@ -333,7 +333,7 @@ Rules:
 Follow the format **perfectly**.
 </SYSTEM>
         `,
-        second: () => `
+    second: () => `
 <SYSTEM>
 # STRICT OUTPUT FORMAT - FOLLOW EXACTLY
 
@@ -442,7 +442,7 @@ Rules:
 Follow the format **perfectly**.
 </SYSTEM>
         `,
-        third: () => `
+    third: () => `
 <SYSTEM>
 # STRICT OUTPUT FORMAT - FOLLOW EXACTLY
 
@@ -551,14 +551,18 @@ Rules:
 Follow the format **perfectly**.
 </SYSTEM>
         `
-    }
-}, { get(t, p) { return (
-    // Functions get called and trimmed
-    (typeof t[p] === "function")
-    ? t[p]().trim()
-    // Objects get wrapped in their own Proxy
-    : (t[p] && (typeof t[p] === "object"))
-    ? new Proxy(t[p], this)
-    // Primitives pass through
-    : t[p]
-); } });
+  }
+}, {
+  get(t, p) {
+    return (
+      // Functions get called and trimmed
+      (typeof t[p] === "function")
+        ? t[p]().trim()
+        // Objects get wrapped in their own Proxy
+        : (t[p] && (typeof t[p] === "object"))
+          ? new Proxy(t[p], this)
+          // Primitives pass through
+          : t[p]
+    );
+  }
+});

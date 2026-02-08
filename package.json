@@ -1,13 +1,24 @@
 {
   "name": "quillscript",
   "version": "1.0.0",
-  "description": "Made by UmbraQuill ❤️",
-  "main": "index.js",
+  "description": "Fully passive narrative improvements for AI Dungeon",
   "type": "module",
   "scripts": {
-    "build": "node build.js"
+    "build": "node build.js",
+    "build:min": "node build.js --minify",
+    "build:pretty": "node build.js --format=pretty",
+    "build:minified": "node build.js --minify --format=minified"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC"
+  "keywords": [
+    "quillscript",
+    "aidungeon",
+    "ai",
+    "adventure"
+  ],
+  "author": "UmbraQuill",
+  "license": "MIT",
+  "devDependencies": {
+    "prettier": "^3.8.1",
+    "terser": "^5.46.0"
+  }
 }

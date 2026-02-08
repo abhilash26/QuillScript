@@ -1,13 +1,11 @@
 globalThis.MainSettings = class MainSettings {
-    //—————————————————————————————————————————————————————————————————————————————————
-
-    /**
-     * QuillScript
-     * Made by UmbraQuill
-     * Gives story characters the ability to learn, plan, and adapt over time
-     * QuillScript is free and open-source for anyone! ❤️
-     */
-    static QS = {
+  /**
+   * QuillScript
+   * Made by UmbraQuill
+   * Gives story characters the ability to learn, plan, and adapt over time
+   * QuillScript is free and open-source for anyone! ❤️
+   */
+  static QS = {
     // Default settings for scenario creators to modify:
 
     // List the first name of every scenario NPC whose brain should be simulated by QuillScript:
@@ -58,25 +56,25 @@ globalThis.MainSettings = class MainSettings {
     IS_CONFIG_CARD_PINNED_BY_DEFAULT: false
     // (true or false)
     ,
-    }; //——————————————————————————————————————————————————————————————————————————————
-    #config;
-    constructor(script, alternative) {
-        this.#config = (
-            MainSettings.hasOwnProperty(script)
-            ? MainSettings[script]
-            : ((typeof alternative === "string") && MainSettings.hasOwnProperty(alternative))
-            ? MainSettings[alternative]
-            : null
-        );
-        return this;
+  }; //——————————————————————————————————————————————————————————————————————————————
+  #config;
+  constructor(script, alternative) {
+    this.#config = (
+      MainSettings.hasOwnProperty(script)
+        ? MainSettings[script]
+        : ((typeof alternative === "string") && MainSettings.hasOwnProperty(alternative))
+          ? MainSettings[alternative]
+          : null
+    );
+    return this;
+  }
+  merge(settings) {
+    if (!this.#config || !settings || (typeof settings !== "object")) {
+      return;
     }
-    merge(settings) {
-        if (!this.#config || !settings || (typeof settings !== "object")) {
-            return;
-        }
-        for (const [key, value] of Object.entries(this.#config)) {
-            settings[key] = value;
-        }
-        return;
+    for (const [key, value] of Object.entries(this.#config)) {
+      settings[key] = value;
     }
+    return;
+  }
 }
